@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Pos?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx/25"
+           xmlns:fx="http://javafx.com/fxml"
+           style="-fx-background-color: linear-gradient(to bottom right, #0F172A, #1E293B);">
+
+    <VBox alignment="CENTER"
+          spacing="25"
+          fillWidth="false">
+
+        <!-- Logo -->
+        <Label text="LaundryLink"
+               style="-fx-font-size: 36px;
+                      -fx-font-weight: bold;
+                      -fx-text-fill: white;" />
+
+        <Label text="Smart Laundry Management System"
+               style="-fx-font-size: 15px;
+                      -fx-text-fill: #CBD5E1;" />
+
+        <!-- Login Card -->
+        <VBox alignment="CENTER"
+              spacing="18"
+              maxWidth="400"
+              prefWidth="380"
+              style="-fx-background-color: rgba(255,255,255,0.08);
+                     -fx-background-radius: 20;
+                     -fx-border-color: rgba(255,255,255,0.15);
+                     -fx-border-radius: 20;
+                     -fx-padding: 35;">
+
+            <Label text="Login"
+                   style="-fx-font-size: 26px;
+                          -fx-font-weight: bold;
+                          -fx-text-fill: white;" />
+
+            <TextField fx:id="usernameField"
+                       promptText="Username"
+                       maxWidth="300"
+                       prefHeight="42"
+                       style="-fx-background-radius: 10;
+                              -fx-font-size: 14px;" />
+
+            <PasswordField fx:id="passwordField"
+                           promptText="Password"
+                           maxWidth="300"
+                           prefHeight="42"
+                           style="-fx-background-radius: 10;
+                                  -fx-font-size: 14px;" />
+
+            <CheckBox text="Remember Me"
+                      style="-fx-text-fill: white;" />
+
+            <Button text="SIGN IN"
+                    maxWidth="300"
+                    prefHeight="45"
+                    style="-fx-background-color: #38BDF8;
+                           -fx-text-fill: white;
+                           -fx-font-size: 14px;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 12;" />
+
+            <Hyperlink text="Forgot Password?"
+                       style="-fx-text-fill: #93C5FD;" />
+
+        </VBox>
+
+        <!-- Footer -->
+        <Label text="© 2026 LaundryLink"
+               style="-fx-text-fill: #94A3B8;" />
+
+    </VBox>
+
+</StackPane>

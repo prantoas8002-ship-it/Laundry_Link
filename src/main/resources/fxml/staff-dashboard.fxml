@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml"
+            style="-fx-background-color:#0B1120;">
+
+
+    <!-- SIDEBAR -->
+
+    <left>
+        <VBox prefWidth="240"
+              spacing="10"
+              style="-fx-background-color:#111827;
+                 -fx-padding:20;">
+
+            <Label text="LaundryLink"
+                   style="-fx-font-size:24px;
+                      -fx-font-weight:bold;
+                      -fx-text-fill:white;" />
+
+            <Label text="Staff Workspace"
+                   style="-fx-text-fill:#94A3B8;" />
+
+            <Separator/>
+
+            <Button text="🏠 Home"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:#4F46E5;
+                       -fx-text-fill:white;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Button text="📝 New Order"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:transparent;
+                       -fx-text-fill:#CBD5E1;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Button text="🔄 Processing"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:transparent;
+                       -fx-text-fill:#CBD5E1;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Button text="🚚 Delivery"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:transparent;
+                       -fx-text-fill:#CBD5E1;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Button text="📦 Inventory"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:transparent;
+                       -fx-text-fill:#CBD5E1;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Button text="⚙ Settings"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:transparent;
+                       -fx-text-fill:#CBD5E1;
+                       -fx-font-size:14px;
+                       -fx-font-weight:bold;
+                       -fx-alignment:CENTER_LEFT;
+                       -fx-background-radius:12;
+                       -fx-padding:0 0 0 18;" />
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="Logout"
+                    maxWidth="Infinity"
+                    prefHeight="46"
+                    style="-fx-background-color:#EF4444;
+                       -fx-text-fill:white;
+                       -fx-font-weight:bold;
+                       -fx-background-radius:12;" />
+
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+
+    <center>
+
+        <VBox spacing="20"
+              style="-fx-padding:25;">
+
+            <!-- HEADER -->
+
+            <HBox alignment="CENTER_LEFT">
+
+                <VBox spacing="4">
+
+                    <Label text="Good Morning 👋"
+                           style="-fx-text-fill:white;
+                              -fx-font-size:30px;
+                              -fx-font-weight:bold;" />
+
+                    <Label text="Manage laundry operations efficiently"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <TextField promptText="Search orders..."
+                           prefWidth="260"
+                           prefHeight="42"
+                           style="-fx-background-radius:12;" />
+
+            </HBox>
+
+            <!-- KPI CARDS -->
+
+            <HBox spacing="18">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="Pending Orders"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="12"
+                           style="-fx-text-fill:#F59E0B;
+                              -fx-font-size:28px;
+                              -fx-font-weight:bold;" />
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="In Washing"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="8"
+                           style="-fx-text-fill:#4F46E5;
+                              -fx-font-size:28px;
+                              -fx-font-weight:bold;" />
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="Ready Delivery"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="5"
+                           style="-fx-text-fill:#10B981;
+                              -fx-font-size:28px;
+                              -fx-font-weight:bold;" />
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="Completed Today"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="17"
+                           style="-fx-text-fill:white;
+                              -fx-font-size:28px;
+                              -fx-font-weight:bold;" />
+                </VBox>
+
+            </HBox>
+
+            <!-- WORKSPACE -->
+
+            <HBox spacing="20"
+                  VBox.vgrow="ALWAYS">
+
+                <!-- TASK LIST -->
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="12"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="Today's Work Queue"
+                           style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;" />
+
+                    <HBox spacing="10"
+                          style="-fx-background-color:#273449;
+                             -fx-background-radius:10;
+                             -fx-padding:12;">
+                        <CheckBox/>
+                        <Label text="Order #1001 - Wash 5 Shirts"
+                               style="-fx-text-fill:white;"/>
+                    </HBox>
+
+                    <HBox spacing="10"
+                          style="-fx-background-color:#273449;
+                             -fx-background-radius:10;
+                             -fx-padding:12;">
+                        <CheckBox/>
+                        <Label text="Order #1002 - Iron Uniform"
+                               style="-fx-text-fill:white;"/>
+                    </HBox>
+
+                    <HBox spacing="10"
+                          style="-fx-background-color:#273449;
+                             -fx-background-radius:10;
+                             -fx-padding:12;">
+                        <CheckBox/>
+                        <Label text="Order #1003 - Dry Cleaning"
+                               style="-fx-text-fill:white;"/>
+                    </HBox>
+
+                </VBox>
+
+                <!-- QUICK ACTIONS -->
+
+                <VBox prefWidth="260"
+                      spacing="15"
+                      style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                    <Label text="Quick Actions"
+                           style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;" />
+
+                    <Button text="+ Create New Order"
+                            maxWidth="Infinity"
+                            prefHeight="45"
+                            style="-fx-background-color:#4F46E5;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:12;" />
+
+                    <Button text="✓ Update Status"
+                            maxWidth="Infinity"
+                            prefHeight="45"
+                            style="-fx-background-color:#10B981;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:12;" />
+
+                    <Button text="🚚 Mark Delivered"
+                            maxWidth="Infinity"
+                            prefHeight="45"
+                            style="-fx-background-color:#F59E0B;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:12;" />
+
+                </VBox>
+
+            </HBox>
+
+        </VBox>
+
+    </center>
+
+
+</BorderPane>

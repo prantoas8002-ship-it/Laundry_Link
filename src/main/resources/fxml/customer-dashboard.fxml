@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+        <?import javafx.geometry.Insets?>
+        <?import javafx.scene.control.*?>
+        <?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/25"
+            xmlns:fx="http://javafx.com/fxml"
+            prefHeight="800.0"
+            prefWidth="1300.0"
+            style="-fx-background-color:#0B1120;">
+
+    <!-- SIDEBAR -->
+    <left>
+        <VBox prefWidth="220"
+              spacing="10"
+              style="-fx-background-color:#111827;">
+
+            <padding>
+                <Insets top="20" right="15" bottom="20" left="15"/>
+            </padding>
+
+            <Label text="LaundryLink"
+                   style="-fx-text-fill:white;
+                          -fx-font-size:24px;
+                          -fx-font-weight:bold;" />
+
+            <Label text="Customer Portal"
+                   style="-fx-text-fill:#94A3B8;" />
+
+            <Separator />
+
+            <Button text="🏠 Dashboard"
+                    prefHeight="45"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:#4F46E5;
+                           -fx-text-fill:white;
+                           -fx-font-weight:bold;
+                           -fx-background-radius:12;" />
+
+            <Button text="➕ New Order"
+                    prefHeight="45"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:transparent;
+                           -fx-text-fill:#CBD5E1;
+                           -fx-font-weight:bold;" />
+
+            <Button text="📦 Track Order"
+                    prefHeight="45"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:transparent;
+                           -fx-text-fill:#CBD5E1;
+                           -fx-font-weight:bold;" />
+
+            <Button text="👤 Profile"
+                    prefHeight="45"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:transparent;
+                           -fx-text-fill:#CBD5E1;
+                           -fx-font-weight:bold;" />
+
+            <Region VBox.vgrow="ALWAYS"/>
+
+            <Button text="Logout"
+                    prefHeight="45"
+                    maxWidth="Infinity"
+                    style="-fx-background-color:#EF4444;
+                           -fx-text-fill:white;
+                           -fx-font-weight:bold;
+                           -fx-background-radius:12;" />
+
+        </VBox>
+    </left>
+
+    <!-- MAIN CONTENT -->
+    <center>
+
+        <VBox spacing="20">
+
+            <padding>
+                <Insets top="25" right="25" bottom="25" left="25"/>
+            </padding>
+
+            <!-- HEADER -->
+            <VBox spacing="5">
+
+                <Label text="Welcome Back 👋"
+                       style="-fx-text-fill:white;
+                              -fx-font-size:30px;
+                              -fx-font-weight:bold;" />
+
+                <Label text="Manage and track your laundry orders"
+                       style="-fx-text-fill:#94A3B8;
+                              -fx-font-size:14px;" />
+
+            </VBox>
+
+            <!-- KPI CARDS -->
+            <HBox spacing="15">
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                             -fx-background-radius:18;
+                             -fx-padding:20;">
+
+                    <Label text="Total Orders"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="58"
+                           style="-fx-text-fill:white;
+                                  -fx-font-size:30px;
+                                  -fx-font-weight:bold;" />
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                             -fx-background-radius:18;
+                             -fx-padding:20;">
+
+                    <Label text="Active Orders"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="3"
+                           style="-fx-text-fill:#F59E0B;
+                                  -fx-font-size:30px;
+                                  -fx-font-weight:bold;" />
+
+                </VBox>
+
+                <VBox HBox.hgrow="ALWAYS"
+                      spacing="8"
+                      style="-fx-background-color:#1E293B;
+                             -fx-background-radius:18;
+                             -fx-padding:20;">
+
+                    <Label text="Total Spent"
+                           style="-fx-text-fill:#94A3B8;" />
+
+                    <Label text="৳12,500"
+                           style="-fx-text-fill:#4F46E5;
+                                  -fx-font-size:30px;
+                                  -fx-font-weight:bold;" />
+
+                </VBox>
+
+            </HBox>
+
+            <!-- CURRENT ORDERS -->
+            <VBox spacing="12"
+                  style="-fx-background-color:#1E293B;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
+
+                <Label text="Current Orders"
+                       style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;" />
+
+                <Separator />
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Order #1001"
+                           style="-fx-text-fill:white;" />
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Washing"
+                           style="-fx-text-fill:#F59E0B;" />
+                </HBox>
+
+                <HBox alignment="CENTER_LEFT">
+                    <Label text="Order #1002"
+                           style="-fx-text-fill:white;" />
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label text="Ready for Delivery"
+                           style="-fx-text-fill:#10B981;" />
+                </HBox>
+
+            </VBox>
+
+            <!-- QUICK ACTIONS -->
+            <HBox spacing="15">
+
+                <Button text="+ New Order"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        prefHeight="50"
+                        style="-fx-background-color:#4F46E5;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:12;" />
+
+                <Button text="Track Order"
+                        HBox.hgrow="ALWAYS"
+                        maxWidth="Infinity"
+                        prefHeight="50"
+                        style="-fx-background-color:#10B981;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:12;" />
+
+            </HBox>
+
+        </VBox>
+
+    </center>
+
+</BorderPane>
+
