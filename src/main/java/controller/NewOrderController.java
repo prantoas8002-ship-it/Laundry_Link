@@ -8,6 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import model.Session;
 
 import java.io.IOException;
 
@@ -139,11 +140,21 @@ public class NewOrderController {
 
     @FXML
     private void goDashboard(ActionEvent event) {
+        switch (Session.role)
+        {
+            case "ADMIN" :
+                loadPage(event, "/fxml/admin-dashboard.fxml");
+                break;
+            case "STAFF" :
+                loadPage(event, "/fxml/staff-dashboard.fxml");
+                break;
+            case "CUSTOMER" :
+                loadPage(event, "/fxml/customer-dashboard.fxml");
+                break;
+            default:
+                loadPage(event, "/fxml/admin-dashboard.fxml");
+        }
 
-        loadPage(
-                event,
-                "/fxml/customer-dashboard.fxml"
-        );
     }
 
     private void loadPage(

@@ -10,6 +10,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import model.Session;
 
 import java.io.IOException;
 
@@ -30,14 +31,17 @@ public class LoginController {
         try {
 
             if (username.equals("aaa") && password.equals("aaa")) {
+                Session.role = "ADMIN";
                 loadPage(event, "/fxml/admin-dashboard.fxml");
             }
 
             else if (username.equals("bbb") && password.equals("bbb")) {
                 loadPage(event, "/fxml/staff-dashboard.fxml");
+                Session.role = "STAFF";
             }
 
             else if (username.equals("ccc") && password.equals("ccc")) {
+                Session.role = "CUSTOMER";
                 loadPage(event, "/fxml/customer-dashboard.fxml");
             }
 
