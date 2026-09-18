@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.*?>
-
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml"
+            fx:controller="controller.AdminDashboardController"
             style="-fx-background-color: #020617;">
+
     <left>
         <VBox prefWidth="250"
               spacing="10"
@@ -14,67 +15,73 @@
 
             <Label text="LaundryLink"
                    style="-fx-text-fill: white;
-                      -fx-font-size: 24;
-                      -fx-font-weight: bold;" />
+                          -fx-font-size: 24;
+                          -fx-font-weight: bold;" />
 
             <Label text="Laundry Management System"
                    style="-fx-text-fill: #94A3B8;
-                      -fx-font-size: 12;" />
+                          -fx-font-size: 12;" />
 
             <Separator />
 
-            <Button text="Dashboard"
+            <Button fx:id="dashboardBtn"
+                    text="Dashboard"
+                    onAction="#showDashboard"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: #3B82F6;
-                       -fx-text-fill: white;
-                       -fx-font-weight: bold;
-                       -fx-background-radius: 12;" />
+                           -fx-text-fill: white;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 12;" />
 
-            <Button text="Orders"
+            <Button fx:id="ordersBtn"
+                    text="Orders"
+                    onAction="#openOrders"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: transparent;
-                       -fx-text-fill: #CBD5E1;
-                       -fx-font-weight: bold;" />
+                           -fx-text-fill: #CBD5E1;
+                           -fx-font-weight: bold;" />
 
-            <Button text="Customers"
+            <Button fx:id="customersBtn"
+                    text="Customers"
+                    onAction="#openCustomers"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: transparent;
-                       -fx-text-fill: #CBD5E1;
-                       -fx-font-weight: bold;" />
+                           -fx-text-fill: #CBD5E1;
+                           -fx-font-weight: bold;" />
 
-            <Button text="Billing"
+            <Button fx:id="billingBtn"
+                    text="Billing"
+                    onAction="#openBilling"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: transparent;
-                       -fx-text-fill: #CBD5E1;
-                       -fx-font-weight: bold;" />
+                           -fx-text-fill: #CBD5E1;
+                           -fx-font-weight: bold;" />
 
-            <Button text="Inventory"
+            <Button fx:id="inventoryBtn"
+                    text="Inventory"
+                    onAction="#openInventory"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: transparent;
-                       -fx-text-fill: #CBD5E1;
-                       -fx-font-weight: bold;" />
+                           -fx-text-fill: #CBD5E1;
+                           -fx-font-weight: bold;" />
 
-            <Button text="Reports"
-                    maxWidth="Infinity"
-                    prefHeight="45"
-                    style="-fx-background-color: transparent;
-                       -fx-text-fill: #CBD5E1;
-                       -fx-font-weight: bold;" />
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <Button text="Logout"
+            <Button fx:id="logoutBtn"
+                    text="Logout"
+                    onAction="#logout"
                     maxWidth="Infinity"
                     prefHeight="45"
                     style="-fx-background-color: #EF4444;
-                       -fx-text-fill: white;
-                       -fx-font-weight: bold;
-                       -fx-background-radius: 12;" />
+                           -fx-text-fill: white;
+                           -fx-font-weight: bold;
+                           -fx-background-radius: 12;" />
 
         </VBox>
     </left>
@@ -82,6 +89,7 @@
     <center>
 
         <VBox spacing="20"
+              BorderPane.alignment="CENTER"
               style="-fx-padding: 25;">
 
             <HBox alignment="CENTER_LEFT">
@@ -90,8 +98,8 @@
 
                     <Label text="Admin Dashboard"
                            style="-fx-text-fill: white;
-                              -fx-font-size: 30;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 30;
+                                  -fx-font-weight: bold;" />
 
                     <Label text="Manage your laundry business efficiently"
                            style="-fx-text-fill: #94A3B8;" />
@@ -100,15 +108,17 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
-                <TextField promptText="Search..."
+                <TextField fx:id="searchField"
+                           promptText="Search..."
+                           onAction="#searchOrders"
                            prefWidth="250"
                            prefHeight="40"
                            style="-fx-background-radius: 12;" />
 
                 <Label text="Admin"
                        style="-fx-text-fill: white;
-                          -fx-font-size: 14;
-                          -fx-padding: 0 0 0 15;" />
+                              -fx-font-size: 14;
+                              -fx-padding: 0 0 0 15;" />
 
             </HBox>
 
@@ -124,64 +134,68 @@
                 <VBox GridPane.columnIndex="0"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
-                         -fx-background-radius: 18;
-                         -fx-padding: 20;">
+                             -fx-background-radius: 18;
+                             -fx-padding: 20;">
 
                     <Label text="Total Orders"
                            style="-fx-text-fill: #94A3B8;" />
 
-                    <Label text="1,245"
+                    <Label fx:id="totalOrdersLabel"
+                           text="1245"
                            style="-fx-text-fill: white;
-                              -fx-font-size: 30;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 30;
+                                  -fx-font-weight: bold;" />
 
                 </VBox>
 
                 <VBox GridPane.columnIndex="1"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
-                         -fx-background-radius: 18;
-                         -fx-padding: 20;">
+                             -fx-background-radius: 18;
+                             -fx-padding: 20;">
 
                     <Label text="Pending Orders"
                            style="-fx-text-fill: #94A3B8;" />
 
-                    <Label text="83"
+                    <Label fx:id="pendingOrdersLabel"
+                           text="83"
                            style="-fx-text-fill: #F59E0B;
-                              -fx-font-size: 30;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 30;
+                                  -fx-font-weight: bold;" />
 
                 </VBox>
 
                 <VBox GridPane.columnIndex="2"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
-                         -fx-background-radius: 18;
-                         -fx-padding: 20;">
+                             -fx-background-radius: 18;
+                             -fx-padding: 20;">
 
                     <Label text="Completed"
                            style="-fx-text-fill: #94A3B8;" />
 
-                    <Label text="1,162"
+                    <Label fx:id="completedOrdersLabel"
+                           text="1162"
                            style="-fx-text-fill: #22C55E;
-                              -fx-font-size: 30;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 30;
+                                  -fx-font-weight: bold;" />
 
                 </VBox>
 
                 <VBox GridPane.columnIndex="3"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
-                         -fx-background-radius: 18;
-                         -fx-padding: 20;">
+                             -fx-background-radius: 18;
+                             -fx-padding: 20;">
 
                     <Label text="Revenue"
                            style="-fx-text-fill: #94A3B8;" />
 
-                    <Label text="12,540"
+                    <Label fx:id="revenueLabel"
+                           text="12540"
                            style="-fx-text-fill: #38BDF8;
-                              -fx-font-size: 30;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 30;
+                                  -fx-font-weight: bold;" />
 
                 </VBox>
 
@@ -190,32 +204,45 @@
             <VBox VBox.vgrow="ALWAYS"
                   spacing="15"
                   style="-fx-background-color: #1E293B;
-                     -fx-background-radius: 18;
-                     -fx-padding: 20;">
+                         -fx-background-radius: 18;
+                         -fx-padding: 20;">
 
                 <HBox>
 
                     <Label text="Recent Orders"
                            style="-fx-text-fill: white;
-                              -fx-font-size: 18;
-                              -fx-font-weight: bold;" />
+                                  -fx-font-size: 18;
+                                  -fx-font-weight: bold;" />
 
                     <Region HBox.hgrow="ALWAYS"/>
 
                     <Button text="View All"
+                            onAction="#viewAllOrders"
                             style="-fx-background-color: #3B82F6;
-                               -fx-text-fill: white;" />
+                                   -fx-text-fill: white;" />
 
                 </HBox>
 
-                <TableView VBox.vgrow="ALWAYS">
+                <TableView fx:id="ordersTable"
+                           VBox.vgrow="ALWAYS">
 
                     <columns>
-                        <TableColumn text="Order ID"/>
-                        <TableColumn text="Customer"/>
-                        <TableColumn text="Service"/>
-                        <TableColumn text="Status"/>
-                        <TableColumn text="Amount"/>
+
+                        <TableColumn text="Order ID"
+                                     prefWidth="120" />
+
+                        <TableColumn text="Customer"
+                                     prefWidth="220" />
+
+                        <TableColumn text="Service"
+                                     prefWidth="220" />
+
+                        <TableColumn text="Status"
+                                     prefWidth="180" />
+
+                        <TableColumn text="Amount"
+                                     prefWidth="150" />
+
                     </columns>
 
                 </TableView>
@@ -225,6 +252,5 @@
         </VBox>
 
     </center>
-
 
 </BorderPane>

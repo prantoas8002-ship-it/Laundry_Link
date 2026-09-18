@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-        <?import javafx.geometry.Insets?>
-        <?import javafx.scene.control.*?>
-        <?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml"
-            prefHeight="800.0"
-            prefWidth="1300.0"
+            fx:controller="controller.CustomerDashboardController"
             style="-fx-background-color:#0B1120;">
 
     <!-- SIDEBAR -->
+
     <left>
+
         <VBox prefWidth="220"
               spacing="10"
               style="-fx-background-color:#111827;">
@@ -28,9 +29,11 @@
             <Label text="Customer Portal"
                    style="-fx-text-fill:#94A3B8;" />
 
-            <Separator />
+            <Separator/>
 
-            <Button text="🏠 Dashboard"
+            <Button fx:id="dashboardBtn"
+                    text="🏠 Dashboard"
+                    onAction="#showDashboard"
                     prefHeight="45"
                     maxWidth="Infinity"
                     style="-fx-background-color:#4F46E5;
@@ -38,21 +41,27 @@
                            -fx-font-weight:bold;
                            -fx-background-radius:12;" />
 
-            <Button text="➕ New Order"
+            <Button fx:id="newOrderBtn"
+                    text="➕ New Order"
+                    onAction="#openNewOrder"
                     prefHeight="45"
                     maxWidth="Infinity"
                     style="-fx-background-color:transparent;
                            -fx-text-fill:#CBD5E1;
                            -fx-font-weight:bold;" />
 
-            <Button text="📦 Track Order"
+            <Button fx:id="trackOrderBtn"
+                    text="📦 Track Order"
+                    onAction="#openTrackOrder"
                     prefHeight="45"
                     maxWidth="Infinity"
                     style="-fx-background-color:transparent;
                            -fx-text-fill:#CBD5E1;
                            -fx-font-weight:bold;" />
 
-            <Button text="👤 Profile"
+            <Button fx:id="profileBtn"
+                    text="👤 Profile"
+                    onAction="#openProfile"
                     prefHeight="45"
                     maxWidth="Infinity"
                     style="-fx-background-color:transparent;
@@ -61,7 +70,9 @@
 
             <Region VBox.vgrow="ALWAYS"/>
 
-            <Button text="Logout"
+            <Button fx:id="logoutBtn"
+                    text="Logout"
+                    onAction="#logout"
                     prefHeight="45"
                     maxWidth="Infinity"
                     style="-fx-background-color:#EF4444;
@@ -70,18 +81,22 @@
                            -fx-background-radius:12;" />
 
         </VBox>
+
     </left>
 
     <!-- MAIN CONTENT -->
+
     <center>
 
-        <VBox spacing="20">
+        <VBox spacing="20"
+              BorderPane.alignment="CENTER">
 
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
 
             <!-- HEADER -->
+
             <VBox spacing="5">
 
                 <Label text="Welcome Back 👋"
@@ -96,6 +111,7 @@
             </VBox>
 
             <!-- KPI CARDS -->
+
             <HBox spacing="15">
 
                 <VBox HBox.hgrow="ALWAYS"
@@ -107,7 +123,8 @@
                     <Label text="Total Orders"
                            style="-fx-text-fill:#94A3B8;" />
 
-                    <Label text="58"
+                    <Label fx:id="totalOrdersLabel"
+                           text="58"
                            style="-fx-text-fill:white;
                                   -fx-font-size:30px;
                                   -fx-font-weight:bold;" />
@@ -123,7 +140,8 @@
                     <Label text="Active Orders"
                            style="-fx-text-fill:#94A3B8;" />
 
-                    <Label text="3"
+                    <Label fx:id="activeOrdersLabel"
+                           text="3"
                            style="-fx-text-fill:#F59E0B;
                                   -fx-font-size:30px;
                                   -fx-font-weight:bold;" />
@@ -139,7 +157,8 @@
                     <Label text="Total Spent"
                            style="-fx-text-fill:#94A3B8;" />
 
-                    <Label text="৳12,500"
+                    <Label fx:id="totalSpentLabel"
+                           text="৳12,500"
                            style="-fx-text-fill:#4F46E5;
                                   -fx-font-size:30px;
                                   -fx-font-weight:bold;" />
@@ -149,7 +168,9 @@
             </HBox>
 
             <!-- CURRENT ORDERS -->
-            <VBox spacing="12"
+
+            <VBox VBox.vgrow="ALWAYS"
+                  spacing="12"
                   style="-fx-background-color:#1E293B;
                          -fx-background-radius:18;
                          -fx-padding:20;">
@@ -162,27 +183,42 @@
                 <Separator />
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label text="Order #1001"
+
+                    <Label fx:id="order1Label"
+                           text="Order #1001"
                            style="-fx-text-fill:white;" />
+
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Label text="Washing"
+
+                    <Label fx:id="status1Label"
+                           text="Washing"
                            style="-fx-text-fill:#F59E0B;" />
+
                 </HBox>
 
                 <HBox alignment="CENTER_LEFT">
-                    <Label text="Order #1002"
+
+                    <Label fx:id="order2Label"
+                           text="Order #1002"
                            style="-fx-text-fill:white;" />
+
                     <Region HBox.hgrow="ALWAYS"/>
-                    <Label text="Ready for Delivery"
+
+                    <Label fx:id="status2Label"
+                           text="Ready for Delivery"
                            style="-fx-text-fill:#10B981;" />
+
                 </HBox>
 
             </VBox>
 
             <!-- QUICK ACTIONS -->
+
             <HBox spacing="15">
 
-                <Button text="+ New Order"
+                <Button fx:id="quickNewOrderBtn"
+                        text="+ New Order"
+                        onAction="#openNewOrder"
                         HBox.hgrow="ALWAYS"
                         maxWidth="Infinity"
                         prefHeight="50"
@@ -191,7 +227,9 @@
                                -fx-font-weight:bold;
                                -fx-background-radius:12;" />
 
-                <Button text="Track Order"
+                <Button fx:id="quickTrackOrderBtn"
+                        text="Track Order"
+                        onAction="#openTrackOrder"
                         HBox.hgrow="ALWAYS"
                         maxWidth="Infinity"
                         prefHeight="50"
@@ -207,4 +245,3 @@
     </center>
 
 </BorderPane>
-

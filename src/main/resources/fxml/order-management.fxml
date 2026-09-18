@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color:#0B1120;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color:#0B1120;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.OrderManagementController">
 
     <center>
 
@@ -33,7 +33,7 @@
 
                 </VBox>
 
-                <Button fx:id="dashboardBtn" prefHeight="42" prefWidth="140" style="-fx-background-color:#2563EB;                                -fx-text-fill:white;                                -fx-font-size:14px;                                -fx-font-weight:bold;                                -fx-background-radius:10;                                -fx-cursor:hand;" text="🏠 Dashboard" />
+                <Button fx:id="dashboardBtn" onAction="#goDashboard" prefHeight="42" prefWidth="140" style="-fx-background-color:#2563EB;                                -fx-text-fill:white;                                -fx-font-size:14px;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🏠 Dashboard" />
 
             </HBox>
 
@@ -41,47 +41,47 @@
 
             <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-background-color:#111827;                          -fx-background-radius:18;                          -fx-padding:20;">
 
-                <Button fx:id="addBtn" prefHeight="45" prefWidth="140" style="-fx-background-color:#4F46E5;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="+ Add Order" />
+                <Button fx:id="addBtn" onAction="#addOrder" prefHeight="45" prefWidth="140" style="-fx-background-color:#4F46E5;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="+ Add Order" />
 
-                <Button fx:id="updateBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#10B981;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="✏ Update" />
+                <Button fx:id="updateBtn" onAction="#updateOrder" prefHeight="45" prefWidth="120" style="-fx-background-color:#10B981;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="✏ Update" />
 
-                <Button fx:id="deleteBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#EF4444;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🗑 Delete" />
+                <Button fx:id="deleteBtn" onAction="#deleteOrder" prefHeight="45" prefWidth="120" style="-fx-background-color:#EF4444;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🗑 Delete" />
 
                 <Region HBox.hgrow="ALWAYS" />
 
                 <TextField fx:id="searchField" prefHeight="45" prefWidth="250" promptText="Search by ID or Customer..." style="-fx-background-color:#1E293B;                                   -fx-control-inner-background:#1E293B;                                   -fx-text-fill:white;                                   -fx-prompt-text-fill:#64748B;                                   -fx-background-radius:10;                                   -fx-border-radius:10;                                   -fx-border-color:#334155;" />
 
-                <Button fx:id="searchBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#F59E0B;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🔍 Search" />
+                <Button fx:id="searchBtn" onAction="#searchOrder" prefHeight="45" prefWidth="120" style="-fx-background-color:#F59E0B;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🔍 Search" />
 
             </HBox>
 
-            <!-- Orders Table -->
+            <!-- Table Section -->
 
             <VBox spacing="15" style="-fx-background-color:#111827;                          -fx-background-radius:18;                          -fx-padding:20;" VBox.vgrow="ALWAYS">
 
                 <Label style="-fx-text-fill:white;                               -fx-font-size:18px;                               -fx-font-weight:bold;" text="Orders List" />
 
-                <TableView fx:id="ordersTable" style="-fx-background-color:#1E293B;" VBox.vgrow="ALWAYS">
+                <TableView fx:id="ordersTable" editable="false" VBox.vgrow="ALWAYS">
 
                     <columns>
 
-                        <TableColumn fx:id="orderIdCol" prefWidth="120" text="Order ID" />
+                        <TableColumn fx:id="orderIdCol" resizable="false" sortable="false" text="Order ID" />
 
-                        <TableColumn fx:id="customerCol" prefWidth="180" text="Customer" />
+                        <TableColumn fx:id="customerCol" resizable="false" sortable="false" text="Customer" />
 
-                        <TableColumn fx:id="serviceCol" prefWidth="180" text="Service" />
+                        <TableColumn fx:id="serviceCol" resizable="false" sortable="false" text="Service" />
 
-                        <TableColumn fx:id="quantityCol" prefWidth="100" text="Quantity" />
+                        <TableColumn fx:id="quantityCol" resizable="false" sortable="false" text="Quantity" />
 
-                        <TableColumn fx:id="statusCol" prefWidth="150" text="Status" />
+                        <TableColumn fx:id="statusCol" resizable="false" sortable="false" text="Status" />
 
-                        <TableColumn fx:id="costCol" prefWidth="120" text="Cost" />
+                        <TableColumn fx:id="costCol" resizable="false" sortable="false" text="Cost" />
 
                     </columns>
 
                 </TableView>
 
-                <!-- Summary Section -->
+                <!-- Footer -->
 
                 <HBox alignment="CENTER_LEFT" spacing="20">
 
