@@ -1,153 +1,265 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane prefHeight="800.0" prefWidth="1200.0" style="-fx-background-color:#0B1120;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane prefHeight="800.0"
+            prefWidth="1200.0"
+            style="-fx-background-color:#0B1120;"
+            xmlns="http://javafx.com/javafx/26"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="controller.InventoryController">
 
     <center>
 
         <VBox spacing="20">
 
             <padding>
-                <Insets bottom="25" left="25" right="25" top="25" />
+                <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
 
             <!-- Header -->
-
             <HBox alignment="CENTER_LEFT" spacing="15">
 
                 <VBox spacing="5">
+                    <Label text="Inventory Management"
+                           style="-fx-text-fill:white;
+                                  -fx-font-size:30px;
+                                  -fx-font-weight:bold;"/>
 
-                    <Label style="-fx-text-fill:white;                                   -fx-font-size:30px;                                   -fx-font-weight:bold;" text="Inventory Management" />
-
-                    <Label style="-fx-text-fill:#94A3B8;                                   -fx-font-size:14px;" text="Manage laundry supplies and stock levels" />
-
+                    <Label text="Manage laundry supplies and stock levels"
+                           style="-fx-text-fill:#94A3B8;
+                                  -fx-font-size:14px;"/>
                 </VBox>
 
-                   <Button fx:id="dashboardBtn" prefHeight="42" prefWidth="140" style="-fx-background-color:#2563EB;                                -fx-text-fill:white;                                -fx-font-size:14px;                                -fx-font-weight:bold;                                -fx-background-radius:10;                                -fx-cursor:hand;" text="🏠 Dashboard" />
+                <Button fx:id="dashboardBtn"
+                        text="🏠 Dashboard"
+                        prefWidth="140"
+                        prefHeight="42"
+                        onAction="#goToDashboard"
+                        style="-fx-background-color:#2563EB;
+                               -fx-text-fill:white;
+                               -fx-font-size:14px;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:10;
+                               -fx-cursor:hand;"/>
 
             </HBox>
 
             <!-- Inventory Form -->
+            <VBox spacing="18"
+                  style="-fx-background-color:#111827;
+                         -fx-background-radius:18;
+                         -fx-padding:25;">
 
-            <VBox spacing="18" style="-fx-background-color:#111827;                          -fx-background-radius:18;                          -fx-padding:25;">
-
-                <Label style="-fx-text-fill:white;                               -fx-font-size:18px;                               -fx-font-weight:bold;" text="Inventory Information" />
+                <Label text="Inventory Information"
+                       style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;"/>
 
                 <GridPane hgap="20" vgap="15">
 
                     <columnConstraints>
-                        <ColumnConstraints percentWidth="50" />
-                        <ColumnConstraints percentWidth="50" />
+                        <ColumnConstraints percentWidth="50"/>
+                        <ColumnConstraints percentWidth="50"/>
                     </columnConstraints>
 
+                    <rowConstraints>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                        <RowConstraints/>
+                    </rowConstraints>
+
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                        <Label text="Item Name" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Item Name" />
-
-                        <TextField fx:id="itemNameField" prefHeight="45" promptText="Enter item name" style="-fx-background-color:#1E293B;                                           -fx-control-inner-background:#1E293B;                                           -fx-text-fill:white;                                           -fx-prompt-text-fill:#64748B;                                           -fx-background-radius:10;                                           -fx-border-radius:10;                                           -fx-border-color:#334155;" />
+                        <TextField fx:id="itemNameField"
+                                   prefHeight="45"
+                                   promptText="Enter item name"
+                                   style="-fx-background-color:#1E293B;
+                                          -fx-control-inner-background:#1E293B;
+                                          -fx-text-fill:white;
+                                          -fx-prompt-text-fill:#64748B;
+                                          -fx-background-radius:10;
+                                          -fx-border-radius:10;
+                                          -fx-border-color:#334155;"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                        <Label text="Category" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Category" />
-
-                        <ComboBox fx:id="categoryBox" maxWidth="Infinity" prefHeight="45" promptText="Select Category" style="-fx-background-color:#1E293B;                                          -fx-background-radius:10;                                          -fx-border-radius:10;                                          -fx-border-color:#334155;" />
+                        <ComboBox fx:id="categoryBox"
+                                  maxWidth="Infinity"
+                                  prefHeight="45"
+                                  promptText="Select Category"
+                                  style="-fx-background-color:#1E293B;
+                                         -fx-background-radius:10;
+                                         -fx-border-radius:10;
+                                         -fx-border-color:#334155;"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                        <Label text="Quantity" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Quantity" />
-
-                        <TextField fx:id="quantityField" prefHeight="45" promptText="Available quantity" style="-fx-background-color:#1E293B;                                           -fx-control-inner-background:#1E293B;                                           -fx-text-fill:white;                                           -fx-prompt-text-fill:#64748B;                                           -fx-background-radius:10;                                           -fx-border-radius:10;                                           -fx-border-color:#334155;" />
+                        <TextField fx:id="quantityField"
+                                   prefHeight="45"
+                                   promptText="Available quantity"
+                                   style="-fx-background-color:#1E293B;
+                                          -fx-control-inner-background:#1E293B;
+                                          -fx-text-fill:white;
+                                          -fx-prompt-text-fill:#64748B;
+                                          -fx-background-radius:10;
+                                          -fx-border-radius:10;
+                                          -fx-border-color:#334155;"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                        <Label text="Unit" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Unit" />
-
-                        <ComboBox fx:id="unitBox" maxWidth="Infinity" prefHeight="45" promptText="Select Unit" style="-fx-background-color:#1E293B;                                          -fx-background-radius:10;                                          -fx-border-radius:10;                                          -fx-border-color:#334155;" />
+                        <ComboBox fx:id="unitBox"
+                                  maxWidth="Infinity"
+                                  prefHeight="45"
+                                  promptText="Select Unit"
+                                  style="-fx-background-color:#1E293B;
+                                         -fx-background-radius:10;
+                                         -fx-border-radius:10;
+                                         -fx-border-color:#334155;"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="0" GridPane.rowIndex="2">
+                        <Label text="Supplier" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Supplier" />
-
-                        <TextField fx:id="supplierField" prefHeight="45" promptText="Supplier name" style="-fx-background-color:#1E293B;                                           -fx-control-inner-background:#1E293B;                                           -fx-text-fill:white;                                           -fx-prompt-text-fill:#64748B;                                           -fx-background-radius:10;                                           -fx-border-radius:10;                                           -fx-border-color:#334155;" />
+                        <TextField fx:id="supplierField"
+                                   prefHeight="45"
+                                   promptText="Supplier name"
+                                   style="-fx-background-color:#1E293B;
+                                          -fx-control-inner-background:#1E293B;
+                                          -fx-text-fill:white;
+                                          -fx-prompt-text-fill:#64748B;
+                                          -fx-background-radius:10;
+                                          -fx-border-radius:10;
+                                          -fx-border-color:#334155;"/>
                     </VBox>
 
                     <VBox spacing="5" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                        <Label text="Unit Cost" style="-fx-text-fill:#CBD5E1;"/>
 
-                        <Label style="-fx-text-fill:#CBD5E1;" text="Unit Cost" />
-
-                        <TextField fx:id="costField" prefHeight="45" promptText="Cost per unit" style="-fx-background-color:#1E293B;                                           -fx-control-inner-background:#1E293B;                                           -fx-text-fill:white;                                           -fx-prompt-text-fill:#64748B;                                           -fx-background-radius:10;                                           -fx-border-radius:10;                                           -fx-border-color:#334155;" />
+                        <TextField fx:id="costField"
+                                   prefHeight="45"
+                                   promptText="Cost per unit"
+                                   style="-fx-background-color:#1E293B;
+                                          -fx-control-inner-background:#1E293B;
+                                          -fx-text-fill:white;
+                                          -fx-prompt-text-fill:#64748B;
+                                          -fx-background-radius:10;
+                                          -fx-border-radius:10;
+                                          -fx-border-color:#334155;"/>
                     </VBox>
-               <rowConstraints>
-                  <RowConstraints />
-                  <RowConstraints />
-                  <RowConstraints />
-               </rowConstraints>
 
                 </GridPane>
 
                 <HBox spacing="15">
 
-                    <Button fx:id="addBtn" prefHeight="45" prefWidth="140" style="-fx-background-color:#4F46E5;                                    -fx-text-fill:white;                                    -fx-font-weight:bold;                                    -fx-background-radius:10;" text="+ Add Item" />
+                    <Button fx:id="addBtn"
+                            text="+ Add Item"
+                            prefWidth="140"
+                            prefHeight="45"
+                            onAction="#addItem"
+                            style="-fx-background-color:#4F46E5;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:10;"/>
 
-                    <Button fx:id="updateBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#10B981;                                    -fx-text-fill:white;                                    -fx-font-weight:bold;                                    -fx-background-radius:10;" text="✏ Update" />
+                    <Button fx:id="updateBtn"
+                            text="✏ Update"
+                            prefWidth="120"
+                            prefHeight="45"
+                            onAction="#updateItem"
+                            style="-fx-background-color:#10B981;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:10;"/>
 
-                    <Button fx:id="deleteBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#EF4444;                                    -fx-text-fill:white;                                    -fx-font-weight:bold;                                    -fx-background-radius:10;" text="🗑 Delete" />
+                    <Button fx:id="deleteBtn"
+                            text="🗑 Delete"
+                            prefWidth="120"
+                            prefHeight="45"
+                            onAction="#deleteItem"
+                            style="-fx-background-color:#EF4444;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:10;"/>
 
-                    <Button fx:id="clearBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#475569;                                    -fx-text-fill:white;                                    -fx-font-weight:bold;                                    -fx-background-radius:10;" text="Clear" />
+                    <Button fx:id="clearBtn"
+                            text="Clear"
+                            prefWidth="120"
+                            prefHeight="45"
+                            onAction="#clearFields"
+                            style="-fx-background-color:#475569;
+                                   -fx-text-fill:white;
+                                   -fx-font-weight:bold;
+                                   -fx-background-radius:10;"/>
 
                 </HBox>
 
             </VBox>
 
             <!-- Search -->
+            <HBox alignment="CENTER_LEFT"
+                  spacing="15"
+                  style="-fx-background-color:#111827;
+                         -fx-background-radius:18;
+                         -fx-padding:15;">
 
-            <HBox alignment="CENTER_LEFT" spacing="15" style="-fx-background-color:#111827;                          -fx-background-radius:18;                          -fx-padding:15;">
+                <TextField fx:id="searchField"
+                           prefWidth="300"
+                           prefHeight="45"
+                           promptText="Search inventory item..."
+                           style="-fx-background-color:#1E293B;
+                                  -fx-control-inner-background:#1E293B;
+                                  -fx-text-fill:white;
+                                  -fx-prompt-text-fill:#64748B;
+                                  -fx-background-radius:10;
+                                  -fx-border-radius:10;
+                                  -fx-border-color:#334155;"/>
 
-                <TextField fx:id="searchField" prefHeight="45" prefWidth="300" promptText="Search inventory item..." style="-fx-background-color:#1E293B;                                   -fx-control-inner-background:#1E293B;                                   -fx-text-fill:white;                                   -fx-prompt-text-fill:#64748B;                                   -fx-background-radius:10;                                   -fx-border-radius:10;                                   -fx-border-color:#334155;" />
+                <Button fx:id="searchBtn"
+                        text="🔍 Search"
+                        prefWidth="120"
+                        prefHeight="45"
+                        onAction="#searchItem"
+                        style="-fx-background-color:#F59E0B;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:10;"/>
 
-                <Button fx:id="searchBtn" prefHeight="45" prefWidth="120" style="-fx-background-color:#F59E0B;                                -fx-text-fill:white;                                -fx-font-weight:bold;                                -fx-background-radius:10;" text="🔍 Search" />
             </HBox>
 
-            <!-- Inventory Table -->
+            <!-- Table -->
+            <VBox spacing="15"
+                  VBox.vgrow="ALWAYS"
+                  style="-fx-background-color:#111827;
+                         -fx-background-radius:18;
+                         -fx-padding:20;">
 
-            <VBox spacing="15" style="-fx-background-color:#111827;                          -fx-background-radius:18;                          -fx-padding:20;" VBox.vgrow="ALWAYS">
+                <Label text="Inventory Records"
+                       style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;"/>
 
-                <Label style="-fx-text-fill:white;                               -fx-font-size:18px;                               -fx-font-weight:bold;" text="Inventory Records" />
-
-                <TableView fx:id="inventoryTable" VBox.vgrow="ALWAYS">
+                <TableView fx:id="inventoryTable"
+                           VBox.vgrow="ALWAYS">
 
                     <columns>
 
-                        <TableColumn fx:id="idCol" prefWidth="80" text="ID" />
-
-                        <TableColumn fx:id="itemNameCol" prefWidth="220" text="Item Name" />
-
-                        <TableColumn fx:id="categoryCol" prefWidth="150" text="Category" />
-
-                        <TableColumn fx:id="quantityCol" prefWidth="120" text="Quantity" />
-
-                        <TableColumn fx:id="unitCol" prefWidth="120" text="Unit" />
-
-                        <TableColumn fx:id="supplierCol" prefWidth="180" text="Supplier" />
-
-                        <TableColumn fx:id="costCol" prefWidth="120" text="Unit Cost" />
+                        <TableColumn fx:id="idCol" text="ID" prefWidth="80"/>
+                        <TableColumn fx:id="itemNameCol" text="Item Name" prefWidth="220"/>
+                        <TableColumn fx:id="categoryCol" text="Category" prefWidth="150"/>
+                        <TableColumn fx:id="quantityCol" text="Quantity" prefWidth="120"/>
+                        <TableColumn fx:id="unitCol" text="Unit" prefWidth="120"/>
+                        <TableColumn fx:id="supplierCol" text="Supplier" prefWidth="180"/>
+                        <TableColumn fx:id="costCol" text="Unit Cost" prefWidth="120"/>
 
                     </columns>
 
