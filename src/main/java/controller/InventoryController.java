@@ -12,6 +12,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Inventory;
+import model.Session;
 
 import java.io.IOException;
 
@@ -254,11 +255,31 @@ public class InventoryController {
 
     @FXML
     private void goToDashboard(ActionEvent event) {
+        switch (Session.role)
+        {
+            case "ADMIN" :
+                loadPage(event, "/fxml/admin-dashboard.fxml");
+                break;
+            case "STAFF" :
+                loadPage(event, "/fxml/staff-dashboard.fxml");
+                break;
+            case "CUSTOMER" :
+                loadPage(event, "/fxml/customer-dashboard.fxml");
+                break;
+            default:
+                loadPage(event, "/fxml/admin-dashboard.fxml");
+        }
+    }
+
+    private void loadPage(
+            ActionEvent event,
+            String fxmlPath
+    ) {
 
         try {
 
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/fxml/admin-dashboard.fxml")
+                    getClass().getResource(fxmlPath)
             );
 
             Stage stage =
@@ -266,13 +287,29 @@ public class InventoryController {
                             .getScene()
                             .getWindow();
 
-            stage.setScene(new Scene(root));
-            stage.setTitle("LaundryLink Dashboard");
+            Scene scene = new Scene(root);
+
+            stage.setScene(scene);
+
+            stage.setMaximized(true);
+
             stage.show();
 
         } catch (IOException e) {
 
-            showAlert("Dashboard page not found.");
+            e.printStackTrace();
+
+            Alert alert = new Alert(
+                    Alert.AlertType.ERROR
+            );
+
+            alert.setTitle("Navigation Error");
+            alert.setHeaderText(null);
+            alert.setContentText(
+                    "Could not load:\n" + fxmlPath
+            );
+
+            alert.showAndWait();
         }
     }
 
