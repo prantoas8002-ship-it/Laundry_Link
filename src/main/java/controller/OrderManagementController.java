@@ -1,7 +1,6 @@
 package controller;
 
 import database.DBConnection;
-
 import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -15,12 +14,11 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Order;
+import model.Session;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Optional;
 
 public class OrderManagementController {
@@ -47,56 +45,60 @@ public class OrderManagementController {
     private TableColumn<Order, Double> costCol;
 
     @FXML
+    private TextField searchField;
+
+    @FXML
     private Label totalOrdersLabel;
 
     @FXML
     private Label selectedOrderLabel;
 
     @FXML
-    private TextField searchField;
+    private ComboBox<String> statusBox;
 
-    private final ObservableList<Order> orders =
+    @FXML
+    private Button statusUpdateBtn;
+
+    private final ObservableList<Order> orderList =
             FXCollections.observableArrayList();
-
-
-    // ==========================================
-    // INITIALIZE
-    // ==========================================
 
     @FXML
     public void initialize() {
 
         setupTable();
 
-        loadOrdersFromDatabase();
+        loadOrders();
 
-        ordersTable.setItems(orders);
-
-        updateTotalOrders();
-
-        makeColumnsEqualWidth();
+        setupStatusBox();
 
         ordersTable.getSelectionModel()
                 .selectedItemProperty()
-                .addListener((obs, oldVal, newVal) -> {
+                .addListener((obs, oldOrder, newOrder) -> {
 
-                    if (newVal != null) {
+                    if (newOrder != null) {
 
                         selectedOrderLabel.setText(
-                                newVal.getOrderId()
+                                newOrder.getOrderId()
+                        );
+
+                        statusBox.setValue(
+                                newOrder.getStatus()
                         );
 
                     } else {
 
                         selectedOrderLabel.setText("None");
+                        statusBox.setValue(null);
                     }
                 });
+
+        updateStatusButtonState();
     }
 
 
-    // ==========================================
-    // SETUP TABLE
-    // ==========================================
+    // =========================================================
+    // TABLE SETUP
+    // =========================================================
 
     private void setupTable() {
 
@@ -123,16 +125,78 @@ public class OrderManagementController {
         costCol.setCellValueFactory(
                 new PropertyValueFactory<>("cost")
         );
+
+        ordersTable.setItems(orderList);
+
+        orderIdCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.12));
+
+        customerCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.20));
+
+        serviceCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.22));
+
+        quantityCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.12));
+
+        statusCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.17));
+
+        costCol.prefWidthProperty()
+                .bind(ordersTable.widthProperty().multiply(0.17));
     }
 
 
-    // ==========================================
-    // LOAD ORDERS FROM DATABASE
-    // ==========================================
+    // =========================================================
+    // STATUS COMBOBOX
+    // =========================================================
 
-    private void loadOrdersFromDatabase() {
+    private void setupStatusBox() {
 
-        orders.clear();
+        statusBox.setItems(
+                FXCollections.observableArrayList(
+                        "PENDING",
+                        "PROCESSING",
+                        "READY",
+                        "DELIVERED",
+                        "CANCELLED"
+                )
+        );
+
+        statusBox.valueProperty()
+                .addListener((obs, oldValue, newValue) -> {
+
+                    updateStatusButtonState();
+                });
+    }
+
+
+    private void updateStatusButtonState() {
+
+        boolean noOrderSelected =
+                ordersTable == null ||
+                        ordersTable.getSelectionModel().getSelectedItem() == null;
+
+        boolean noStatusSelected =
+                statusBox == null ||
+                        statusBox.getValue() == null;
+
+        if (statusUpdateBtn != null) {
+            statusUpdateBtn.setDisable(
+                    noOrderSelected || noStatusSelected
+            );
+        }
+    }
+
+
+    // =========================================================
+    // LOAD ORDERS
+    // =========================================================
+
+    private void loadOrders() {
+
+        orderList.clear();
 
         String sql = """
                 SELECT
@@ -153,178 +217,101 @@ public class OrderManagementController {
                 """;
 
         try (
-                Connection conn =
-                        DBConnection.getConnection();
-
-                PreparedStatement ps =
-                        conn.prepareStatement(sql);
-
-                ResultSet rs =
-                        ps.executeQuery()
+                Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql);
+                ResultSet rs = ps.executeQuery()
         ) {
 
             while (rs.next()) {
 
-                String orderId =
-                        "ORD-" + rs.getInt("order_id");
+                Order order = new Order(
+                        "ORD-" + rs.getInt("order_id"),
+                        rs.getString("customer_name"),
+                        rs.getString("service_name"),
+                        rs.getInt("quantity"),
+                        rs.getString("status"),
+                        rs.getDouble("total_cost")
+                );
 
-                String customer =
-                        rs.getString("customer_name");
-
-                String service =
-                        rs.getString("service_name");
-
-                int quantity =
-                        rs.getInt("quantity");
-
-                String status =
-                        rs.getString("status");
-
-                double cost =
-                        rs.getDouble("total_cost");
-
-
-                Order order =
-                        new Order(
-                                orderId,
-                                customer,
-                                service,
-                                quantity,
-                                status,
-                                cost
-                        );
-
-                orders.add(order);
+                orderList.add(order);
             }
 
-            System.out.println(
-                    "ORDERS LOADED: " +
-                            orders.size()
+            totalOrdersLabel.setText(
+                    String.valueOf(orderList.size())
             );
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Database Error",
-                    "Could not load orders from database.\n\n"
-                            + e.getMessage()
+                    "Could not load orders."
             );
         }
     }
 
 
-    // ==========================================
-    // EQUAL COLUMN WIDTH
-    // ==========================================
-
-    private void makeColumnsEqualWidth() {
-
-        double borderPadding = 2.0;
-
-        orderIdCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        customerCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        serviceCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        quantityCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        statusCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        costCol.prefWidthProperty().bind(
-                Bindings.divide(
-                        ordersTable.widthProperty()
-                                .subtract(borderPadding),
-                        6
-                )
-        );
-
-        orderIdCol.setResizable(false);
-        customerCol.setResizable(false);
-        serviceCol.setResizable(false);
-        quantityCol.setResizable(false);
-        statusCol.setResizable(false);
-        costCol.setResizable(false);
-    }
-
-
-    // ==========================================
-    // UPDATE TOTAL ORDERS
-    // ==========================================
-
-    private void updateTotalOrders() {
-
-        totalOrdersLabel.setText(
-                String.valueOf(orders.size())
-        );
-    }
-
-
-    // ==========================================
+    // =========================================================
     // ADD ORDER
-    // ==========================================
+    // =========================================================
 
     @FXML
     private void addOrder(ActionEvent event) {
 
-        loadPage(
-                event,
-                "/fxml/new-order.fxml"
-        );
+        try {
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(
+                                    "/fxml/new-order.fxml"
+                            )
+                    );
+
+            Parent root = loader.load();
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showError(
+                    "Navigation Error",
+                    "Could not open New Order page."
+            );
+        }
     }
 
-// ==========================================
-// UPDATE ORDER
-// ==========================================
+
+    // =========================================================
+    // UPDATE ORDER
+    // =========================================================
 
     @FXML
-    private void updateOrder() {
+    private void updateOrder(ActionEvent event) {
 
         Order selectedOrder =
-                ordersTable.getSelectionModel()
-                        .getSelectedItem();
+                ordersTable.getSelectionModel().getSelectedItem();
 
         if (selectedOrder == null) {
 
-            showAlert(
+            showWarning(
                     "No Order Selected",
                     "Please select an order first."
             );
 
             return;
         }
+
+        int orderId =
+                extractOrderId(selectedOrder.getOrderId());
 
         try {
 
@@ -340,121 +327,71 @@ public class OrderManagementController {
             UpdateOrderController controller =
                     loader.getController();
 
-            // ORD-5 -> 5
-            int orderId = Integer.parseInt(
-                    selectedOrder.getOrderId()
-                            .replace("ORD-", "")
-            );
-
-            // Send selected order ID
             controller.setOrderId(orderId);
 
             Stage stage =
-                    (Stage) ordersTable
+                    (Stage) ((Node) event.getSource())
                             .getScene()
                             .getWindow();
 
-            stage.setScene(
-                    new Scene(root)
-            );
-
-            stage.setMaximized(true);
-
+            stage.setScene(new Scene(root));
             stage.show();
 
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             e.printStackTrace();
 
-            showAlert(
-                    "Error",
-                    "Could not open Update Order page.\n\n"
-                            + e.getMessage()
-            );
-
-        } catch (NumberFormatException e) {
-
-            e.printStackTrace();
-
-            showAlert(
-                    "Error",
-                    "Invalid Order ID."
+            showError(
+                    "Navigation Error",
+                    "Could not open Update Order page."
             );
         }
     }
 
 
-    // ==========================================
+    // =========================================================
     // DELETE ORDER
-    // ==========================================
+    // =========================================================
 
     @FXML
     private void deleteOrder(ActionEvent event) {
 
-        Order selected =
-                ordersTable.getSelectionModel()
-                        .getSelectedItem();
+        Order selectedOrder =
+                ordersTable.getSelectionModel().getSelectedItem();
 
-        if (selected == null) {
+        if (selectedOrder == null) {
 
-            showAlert(
-                    "Warning",
-                    "Please select an order."
+            showWarning(
+                    "No Order Selected",
+                    "Please select an order first."
             );
 
             return;
         }
 
-        // Extract numeric ID
-        String orderIdText =
-                selected.getOrderId()
-                        .replace("ORD-", "");
+        Alert confirmation =
+                new Alert(Alert.AlertType.CONFIRMATION);
 
-        int orderId;
+        confirmation.setTitle("Delete Order");
+        confirmation.setHeaderText(
+                "Delete " + selectedOrder.getOrderId() + "?"
+        );
 
-        try {
+        confirmation.setContentText(
+                "This action cannot be undone."
+        );
 
-            orderId =
-                    Integer.parseInt(orderIdText);
+        Optional<ButtonType> result =
+                confirmation.showAndWait();
 
-        } catch (NumberFormatException e) {
-
-            showAlert(
-                    "Error",
-                    "Invalid order ID."
-            );
+        if (result.isEmpty() ||
+                result.get() != ButtonType.OK) {
 
             return;
         }
 
-
-        // Confirmation
-
-        Alert confirm =
-                new Alert(
-                        Alert.AlertType.CONFIRMATION
-                );
-
-        confirm.setTitle("Delete Order");
-
-        confirm.setHeaderText(
-                "Delete " + selected.getOrderId() + "?"
-        );
-
-        confirm.setContentText(
-                "This will permanently delete the order."
-        );
-
-
-        if (confirm.showAndWait()
-                .orElse(ButtonType.CANCEL)
-                != ButtonType.OK) {
-
-            return;
-        }
-
-
-        // Delete from database
+        int orderId =
+                extractOrderId(selectedOrder.getOrderId());
 
         String deleteItemsSql =
                 "DELETE FROM order_items WHERE order_id = ?";
@@ -462,219 +399,461 @@ public class OrderManagementController {
         String deleteOrderSql =
                 "DELETE FROM orders WHERE id = ?";
 
-
-        try (
-                Connection conn =
-                        DBConnection.getConnection()
-        ) {
+        try (Connection conn =
+                     DBConnection.getConnection()) {
 
             conn.setAutoCommit(false);
 
-            try {
+            try (
+                    PreparedStatement deleteItems =
+                            conn.prepareStatement(
+                                    deleteItemsSql
+                            );
 
-                // First delete order items
+                    PreparedStatement deleteOrder =
+                            conn.prepareStatement(
+                                    deleteOrderSql
+                            )
+            ) {
 
-                try (
-                        PreparedStatement ps =
-                                conn.prepareStatement(
-                                        deleteItemsSql
-                                )
-                ) {
+                deleteItems.setInt(1, orderId);
+                deleteItems.executeUpdate();
 
-                    ps.setInt(1, orderId);
+                deleteOrder.setInt(1, orderId);
 
-                    ps.executeUpdate();
+                int deleted =
+                        deleteOrder.executeUpdate();
+
+                if (deleted == 0) {
+
+                    conn.rollback();
+
+                    showError(
+                            "Delete Failed",
+                            "Order was not found."
+                    );
+
+                    return;
                 }
-
-
-                // Then delete order
-
-                try (
-                        PreparedStatement ps =
-                                conn.prepareStatement(
-                                        deleteOrderSql
-                                )
-                ) {
-
-                    ps.setInt(1, orderId);
-
-                    ps.executeUpdate();
-                }
-
 
                 conn.commit();
-
-
-                orders.remove(selected);
-
-                updateTotalOrders();
-
-                selectedOrderLabel.setText("None");
-
-
-                showAlert(
-                        "Success",
-                        "Order deleted successfully."
-                );
-
-            } catch (Exception e) {
-
-                conn.rollback();
-
-                throw e;
             }
+
+            showSuccess(
+                    "Order Deleted",
+                    "Order deleted successfully."
+            );
+
+            loadOrders();
+
+            selectedOrderLabel.setText("None");
+            statusBox.setValue(null);
 
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            showAlert(
-                    "Database Error",
-                    "Could not delete order.\n\n"
-                            + e.getMessage()
+            showError(
+                    "Delete Failed",
+                    "Could not delete the order."
             );
         }
     }
 
 
-    // ==========================================
+    // =========================================================
     // SEARCH
-    // ==========================================
+    // =========================================================
 
     @FXML
     private void searchOrder(ActionEvent event) {
 
-        String keyword =
+        String search =
                 searchField.getText()
                         .trim()
                         .toLowerCase();
 
-        if (keyword.isEmpty()) {
+        if (search.isEmpty()) {
 
-            ordersTable.setItems(orders);
+            ordersTable.setItems(orderList);
+
+            totalOrdersLabel.setText(
+                    String.valueOf(orderList.size())
+            );
 
             return;
         }
 
-
         ObservableList<Order> filtered =
                 FXCollections.observableArrayList();
 
-
-        for (Order order : orders) {
+        for (Order order : orderList) {
 
             if (
-                    order.getOrderId()
-                            .toLowerCase()
-                            .contains(keyword)
-
+                    safeContains(
+                            order.getOrderId(),
+                            search
+                    )
                             ||
-
-                            order.getCustomer()
-                                    .toLowerCase()
-                                    .contains(keyword)
-
+                            safeContains(
+                                    order.getCustomer(),
+                                    search
+                            )
                             ||
-
-                            order.getService()
-                                    .toLowerCase()
-                                    .contains(keyword)
-
+                            safeContains(
+                                    order.getService(),
+                                    search
+                            )
                             ||
-
-                            order.getStatus()
-                                    .toLowerCase()
-                                    .contains(keyword)
+                            safeContains(
+                                    order.getStatus(),
+                                    search
+                            )
             ) {
 
                 filtered.add(order);
             }
         }
 
-
         ordersTable.setItems(filtered);
-    }
 
-
-    // ==========================================
-    // DASHBOARD
-    // ==========================================
-
-    @FXML
-    private void goDashboard(ActionEvent event) {
-
-        loadPage(
-                event,
-                "/fxml/admin-dashboard.fxml"
+        totalOrdersLabel.setText(
+                String.valueOf(filtered.size())
         );
     }
 
 
-    // ==========================================
-    // PAGE LOADING
-    // ==========================================
+    // =========================================================
+    // UPDATE STATUS
+    // =========================================================
 
-    private void loadPage(
-            ActionEvent event,
-            String path
-    ) {
+    @FXML
+    private void updateStatus(ActionEvent event) {
 
-        try {
+        Order selectedOrder =
+                ordersTable.getSelectionModel()
+                        .getSelectedItem();
 
-            Parent root =
-                    FXMLLoader.load(
-                            getClass()
-                                    .getResource(path)
-                    );
+        if (selectedOrder == null) {
 
-
-            Stage stage =
-                    (Stage)
-                            ((Node) event.getSource())
-                                    .getScene()
-                                    .getWindow();
-
-
-            stage.setScene(
-                    new Scene(root)
+            showWarning(
+                    "No Order Selected",
+                    "Please select an order first."
             );
 
-            stage.setMaximized(true);
+            return;
+        }
 
-            stage.show();
+        String currentStatus =
+                selectedOrder.getStatus();
 
-        } catch (IOException e) {
+        String newStatus =
+                statusBox.getValue();
+
+        if (newStatus == null ||
+                newStatus.isBlank()) {
+
+            showWarning(
+                    "No Status Selected",
+                    "Please select a status."
+            );
+
+            return;
+        }
+
+        if (currentStatus.equalsIgnoreCase(newStatus)) {
+
+            showWarning(
+                    "Same Status",
+                    "The order already has this status."
+            );
+
+            return;
+        }
+
+
+        // =====================================================
+        // STATUS TRANSITION VALIDATION
+        // =====================================================
+
+        boolean validTransition = false;
+
+        switch (currentStatus.toUpperCase()) {
+
+            case "PENDING":
+
+                if (newStatus.equalsIgnoreCase("PROCESSING")
+                        || newStatus.equalsIgnoreCase("CANCELLED")) {
+
+                    validTransition = true;
+                }
+
+                break;
+
+
+            case "PROCESSING":
+
+                if (newStatus.equalsIgnoreCase("READY")
+                        || newStatus.equalsIgnoreCase("CANCELLED")) {
+
+                    validTransition = true;
+                }
+
+                break;
+
+
+            case "READY":
+
+                if (newStatus.equalsIgnoreCase("DELIVERED")) {
+
+                    validTransition = true;
+                }
+
+                break;
+
+
+            case "DELIVERED":
+
+                showWarning(
+                        "Order Completed",
+                        "A delivered order cannot be changed."
+                );
+
+                return;
+
+
+            case "CANCELLED":
+
+                showWarning(
+                        "Order Cancelled",
+                        "A cancelled order cannot be changed."
+                );
+
+                return;
+        }
+
+
+        // Invalid transition
+        if (!validTransition) {
+
+            showWarning(
+                    "Invalid Status Change",
+                    "Cannot change status from "
+                            + currentStatus
+                            + " to "
+                            + newStatus
+                            + "."
+            );
+
+            statusBox.setValue(currentStatus);
+
+            return;
+        }
+
+
+        // =====================================================
+        // DATABASE UPDATE
+        // =====================================================
+
+        int orderId =
+                extractOrderId(
+                        selectedOrder.getOrderId()
+                );
+
+        String sql;
+
+        /*
+         * When order becomes DELIVERED,
+         * automatically save today's date.
+         */
+        if ("DELIVERED".equalsIgnoreCase(newStatus)) {
+
+            sql = """
+                UPDATE orders
+                SET status = ?,
+                    delivery_date = date('now')
+                WHERE id = ?
+                """;
+
+        } else {
+
+            sql = """
+                UPDATE orders
+                SET status = ?
+                WHERE id = ?
+                """;
+        }
+
+
+        try (
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(sql)
+        ) {
+
+            ps.setString(1, newStatus);
+            ps.setInt(2, orderId);
+
+            int updated =
+                    ps.executeUpdate();
+
+            if (updated == 0) {
+
+                showError(
+                        "Update Failed",
+                        "Order was not found."
+                );
+
+                return;
+            }
+
+
+            showSuccess(
+                    "Status Updated",
+                    "Order "
+                            + selectedOrder.getOrderId()
+                            + " changed from "
+                            + currentStatus
+                            + " to "
+                            + newStatus
+                            + "."
+            );
+
+
+            // Refresh table
+            loadOrders();
+
+            selectedOrderLabel.setText("None");
+            statusBox.setValue(null);
+
+            ordersTable.getSelectionModel()
+                    .clearSelection();
+
+        } catch (Exception e) {
 
             e.printStackTrace();
 
-            showAlert(
-                    "Error",
-                    "Could not load:\n" + path
+            showError(
+                    "Status Update Failed",
+                    "Could not update order status."
             );
         }
     }
 
 
-    // ==========================================
-    // ALERT
-    // ==========================================
+    // =========================================================
+    // DASHBOARD
+    // =========================================================
 
-    private void showAlert(
+    @FXML
+    private void goDashboard(ActionEvent event) {
+
+        try {
+
+            String dashboard;
+
+            if ("STAFF".equalsIgnoreCase(Session.role)) {
+
+                dashboard = "/fxml/staff-dashboard.fxml";
+
+            } else {
+
+                dashboard = "/fxml/admin-dashboard.fxml";
+            }
+
+            FXMLLoader loader =
+                    new FXMLLoader(
+                            getClass().getResource(dashboard)
+                    );
+
+            Parent root = loader.load();
+
+            Stage stage =
+                    (Stage) ((Node) event.getSource())
+                            .getScene()
+                            .getWindow();
+
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (Exception e) {
+
+            e.printStackTrace();
+
+            showError(
+                    "Navigation Error",
+                    "Could not open dashboard."
+            );
+        }
+    }
+
+
+    // =========================================================
+    // HELPER METHODS
+    // =========================================================
+
+    private int extractOrderId(String orderId) {
+
+        return Integer.parseInt(
+                orderId.replace("ORD-", "")
+        );
+    }
+
+
+    private boolean safeContains(
+            String value,
+            String search
+    ) {
+
+        return value != null &&
+                value.toLowerCase()
+                        .contains(search);
+    }
+
+
+    private void showWarning(
             String title,
             String message
     ) {
 
         Alert alert =
-                new Alert(
-                        Alert.AlertType.INFORMATION
-                );
+                new Alert(Alert.AlertType.WARNING);
 
         alert.setTitle(title);
-
         alert.setHeaderText(null);
-
         alert.setContentText(message);
+        alert.showAndWait();
+    }
 
+
+    private void showSuccess(
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(Alert.AlertType.INFORMATION);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+
+    private void showError(
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(Alert.AlertType.ERROR);
+
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
         alert.showAndWait();
     }
 }

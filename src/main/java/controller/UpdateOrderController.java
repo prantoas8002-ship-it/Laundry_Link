@@ -1,7 +1,7 @@
 package controller;
 
 import database.DBConnection;
-import javafx.collections.FXCollections;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,10 +10,14 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+
 import model.Session;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDate;
 
 public class UpdateOrderController {
@@ -39,21 +43,8 @@ public class UpdateOrderController {
     @FXML
     private TextArea notesArea;
 
-    @FXML
-    private Button dashboardBtn;
 
-    @FXML
-    private Button createOrderBtn;
-
-    @FXML
-    private Button clearBtn;
-
-
-    // Selected order ID
     private int orderId;
-
-    // Current service price
-    private double currentServicePrice = 0;
 
 
     // =========================================================
@@ -65,11 +56,16 @@ public class UpdateOrderController {
 
         loadServices();
 
-        serviceBox.setOnAction(event -> calculateCost());
-
-        quantityField.textProperty().addListener(
-                (observable, oldValue, newValue) -> calculateCost()
+        serviceBox.setOnAction(
+                event -> calculateCost()
         );
+
+
+        quantityField.textProperty()
+                .addListener(
+                        (observable, oldValue, newValue) ->
+                                calculateCost()
+                );
     }
 
 
@@ -77,12 +73,15 @@ public class UpdateOrderController {
     // SET ORDER ID
     // =========================================================
 
-    public void setOrderId(int orderId) {
+    public void setOrderId(
+            int orderId
+    ) {
 
         this.orderId = orderId;
 
         System.out.println(
-                "Updating Order ID: " + orderId
+                "Updating Order ID: "
+                        + orderId
         );
 
         loadOrderData();
@@ -99,16 +98,23 @@ public class UpdateOrderController {
                 SELECT name
                 FROM services
                 WHERE status = 'ACTIVE'
-                ORDER BY id
+                ORDER BY name
                 """;
 
+
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(sql);
+
+                ResultSet rs =
+                        ps.executeQuery()
         ) {
 
             serviceBox.getItems().clear();
+
 
             while (rs.next()) {
 
@@ -117,11 +123,12 @@ public class UpdateOrderController {
                 );
             }
 
+
         } catch (SQLException e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Database Error",
                     "Could not load services.\n\n"
                             + e.getMessage()
@@ -140,7 +147,6 @@ public class UpdateOrderController {
                 SELECT
                     o.id AS order_id,
                     o.pickup_date,
-                    o.status,
                     o.notes,
 
                     c.name AS customer_name,
@@ -164,92 +170,143 @@ public class UpdateOrderController {
                 WHERE o.id = ?
                 """;
 
+
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(sql)
         ) {
 
-            ps.setInt(1, orderId);
-
-            try (ResultSet rs = ps.executeQuery()) {
-
-                if (rs.next()) {
-
-                    // Customer
-                    nameField.setText(
-                            rs.getString("customer_name")
-                    );
-
-                    phoneField.setText(
-                            rs.getString("customer_phone")
-                    );
+            ps.setInt(
+                    1,
+                    orderId
+            );
 
 
-                    // Service
-                    serviceBox.setValue(
-                            rs.getString("service_name")
-                    );
+            try (
+                    ResultSet rs =
+                            ps.executeQuery()
+            ) {
 
+                if (!rs.next()) {
 
-                    // Quantity
-                    quantityField.setText(
-                            String.valueOf(
-                                    rs.getInt("quantity")
-                            )
-                    );
-
-
-                    // Pickup date
-                    String pickupDate =
-                            rs.getString("pickup_date");
-
-                    if (pickupDate != null &&
-                            !pickupDate.isBlank()) {
-
-                        try {
-
-                            pickupDatePicker.setValue(
-                                    LocalDate.parse(pickupDate)
-                            );
-
-                        } catch (Exception e) {
-
-                            System.out.println(
-                                    "Invalid pickup date: "
-                                            + pickupDate
-                            );
-                        }
-                    }
-
-
-                    // Notes
-                    String notes =
-                            rs.getString("notes");
-
-                    if (notes != null) {
-                        notesArea.setText(notes);
-                    } else {
-                        notesArea.clear();
-                    }
-
-
-                    // Calculate cost
-                    calculateCost();
-
-                } else {
-
-                    showAlert(
+                    showError(
                             "Order Not Found",
                             "The selected order could not be found."
                     );
+
+                    return;
                 }
+
+
+                // -------------------------------------------------
+                // CUSTOMER
+                // -------------------------------------------------
+
+                nameField.setText(
+                        rs.getString(
+                                "customer_name"
+                        )
+                );
+
+
+                phoneField.setText(
+                        rs.getString(
+                                "customer_phone"
+                        )
+                );
+
+
+                // -------------------------------------------------
+                // SERVICE
+                // -------------------------------------------------
+
+                serviceBox.setValue(
+                        rs.getString(
+                                "service_name"
+                        )
+                );
+
+
+                // -------------------------------------------------
+                // QUANTITY
+                // -------------------------------------------------
+
+                quantityField.setText(
+                        String.valueOf(
+                                rs.getInt(
+                                        "quantity"
+                                )
+                        )
+                );
+
+
+                // -------------------------------------------------
+                // PICKUP DATE
+                // -------------------------------------------------
+
+                String pickupDate =
+                        rs.getString(
+                                "pickup_date"
+                        );
+
+
+                if (pickupDate != null
+                        && !pickupDate.isBlank()) {
+
+                    try {
+
+                        pickupDatePicker.setValue(
+                                LocalDate.parse(
+                                        pickupDate
+                                )
+                        );
+
+                    } catch (Exception e) {
+
+                        System.out.println(
+                                "Invalid pickup date: "
+                                        + pickupDate
+                        );
+                    }
+                }
+
+
+                // -------------------------------------------------
+                // NOTES
+                // -------------------------------------------------
+
+                String notes =
+                        rs.getString("notes");
+
+
+                if (notes != null) {
+
+                    notesArea.setText(
+                            notes
+                    );
+
+                } else {
+
+                    notesArea.clear();
+                }
+
+
+                // -------------------------------------------------
+                // COST
+                // -------------------------------------------------
+
+                calculateCost();
             }
+
 
         } catch (SQLException e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Database Error",
                     "Could not load order information.\n\n"
                             + e.getMessage()
@@ -265,33 +322,44 @@ public class UpdateOrderController {
     @FXML
     private void calculateCost() {
 
-        String service = serviceBox.getValue();
+        String service =
+                serviceBox.getValue();
+
         String quantityText =
                 quantityField.getText().trim();
 
-        if (service == null ||
-                quantityText.isEmpty()) {
 
-            costField.setText("");
-            currentServicePrice = 0;
+        if (service == null
+                || quantityText.isEmpty()) {
+
+            costField.clear();
+
             return;
         }
+
 
         int quantity;
 
+
         try {
 
-            quantity = Integer.parseInt(quantityText);
+            quantity =
+                    Integer.parseInt(
+                            quantityText
+                    );
 
         } catch (NumberFormatException e) {
 
-            costField.setText("");
+            costField.clear();
+
             return;
         }
 
+
         if (quantity <= 0) {
 
-            costField.setText("");
+            costField.clear();
+
             return;
         }
 
@@ -303,37 +371,55 @@ public class UpdateOrderController {
                 AND status = 'ACTIVE'
                 """;
 
+
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql)
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(sql)
         ) {
 
-            ps.setString(1, service);
+            ps.setString(
+                    1,
+                    service
+            );
 
-            try (ResultSet rs = ps.executeQuery()) {
+
+            try (
+                    ResultSet rs =
+                            ps.executeQuery()
+            ) {
 
                 if (rs.next()) {
 
-                    currentServicePrice =
+                    double price =
                             rs.getDouble("price");
 
+
                     double total =
-                            currentServicePrice * quantity;
+                            price * quantity;
+
 
                     costField.setText(
                             String.format(
-                                    "%.2f",
+                                    "৳ %.2f",
                                     total
                             )
                     );
+
+                } else {
+
+                    costField.clear();
                 }
             }
+
 
         } catch (SQLException e) {
 
             e.printStackTrace();
 
-            costField.setText("");
+            costField.clear();
         }
     }
 
@@ -343,7 +429,9 @@ public class UpdateOrderController {
     // =========================================================
 
     @FXML
-    private void createOrder(ActionEvent event) {
+    private void createOrder(
+            ActionEvent event
+    ) {
 
         String name =
                 nameField.getText().trim();
@@ -370,8 +458,7 @@ public class UpdateOrderController {
 
         if (name.isEmpty()) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Customer name is required."
             );
 
@@ -381,8 +468,7 @@ public class UpdateOrderController {
 
         if (phone.isEmpty()) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Phone number is required."
             );
 
@@ -390,11 +476,10 @@ public class UpdateOrderController {
         }
 
 
-        if (service == null ||
-                service.isBlank()) {
+        if (service == null
+                || service.isBlank()) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Please select a service."
             );
 
@@ -404,8 +489,7 @@ public class UpdateOrderController {
 
         if (quantityText.isEmpty()) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Please enter quantity."
             );
 
@@ -415,15 +499,17 @@ public class UpdateOrderController {
 
         int quantity;
 
+
         try {
 
             quantity =
-                    Integer.parseInt(quantityText);
+                    Integer.parseInt(
+                            quantityText
+                    );
 
         } catch (NumberFormatException e) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Quantity must be a valid number."
             );
 
@@ -433,8 +519,7 @@ public class UpdateOrderController {
 
         if (quantity <= 0) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Quantity must be greater than 0."
             );
 
@@ -444,8 +529,7 @@ public class UpdateOrderController {
 
         if (pickupDate == null) {
 
-            showAlert(
-                    "Validation Error",
+            showWarning(
                     "Please select a pickup date."
             );
 
@@ -453,43 +537,61 @@ public class UpdateOrderController {
         }
 
 
-        // =====================================================
-        // GET SERVICE ID AND PRICE
-        // =====================================================
+        if (pickupDate.isBefore(
+                LocalDate.now()
+        )) {
 
-        int serviceId;
-        double servicePrice;
+            showWarning(
+                    "Pickup date cannot be before today."
+            );
 
-        String serviceSql = """
-                SELECT id, price
-                FROM services
-                WHERE name = ?
-                AND status = 'ACTIVE'
-                """;
+            return;
+        }
 
 
         // =====================================================
         // DATABASE TRANSACTION
         // =====================================================
 
-        try (Connection conn =
-                     DBConnection.getConnection()) {
+        try (
+                Connection conn =
+                        DBConnection.getConnection()
+        ) {
 
             conn.setAutoCommit(false);
 
 
             try {
 
-                // ---------------------------------------------
-                // 1. Get service information
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 1. GET SERVICE
+                // -------------------------------------------------
+
+                int serviceId;
+
+                double servicePrice;
+
+
+                String serviceSql = """
+                        SELECT id, price
+                        FROM services
+                        WHERE name = ?
+                        AND status = 'ACTIVE'
+                        """;
+
 
                 try (
                         PreparedStatement ps =
-                                conn.prepareStatement(serviceSql)
+                                conn.prepareStatement(
+                                        serviceSql
+                                )
                 ) {
 
-                    ps.setString(1, service);
+                    ps.setString(
+                            1,
+                            service
+                    );
+
 
                     try (
                             ResultSet rs =
@@ -498,10 +600,11 @@ public class UpdateOrderController {
 
                         if (!rs.next()) {
 
-                            throw new SQLException(
-                                    "Selected service was not found."
+                            throw new Exception(
+                                    "Selected service is no longer active."
                             );
                         }
+
 
                         serviceId =
                                 rs.getInt("id");
@@ -512,25 +615,27 @@ public class UpdateOrderController {
                 }
 
 
-                // ---------------------------------------------
-                // 2. Calculate new total
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 2. CALCULATE TOTAL
+                // -------------------------------------------------
 
                 double subtotal =
                         servicePrice * quantity;
 
 
-                // ---------------------------------------------
-                // 3. Get customer ID from order
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 3. GET CUSTOMER ID
+                // -------------------------------------------------
 
                 int customerId;
+
 
                 String getCustomerSql = """
                         SELECT customer_id
                         FROM orders
                         WHERE id = ?
                         """;
+
 
                 try (
                         PreparedStatement ps =
@@ -539,7 +644,11 @@ public class UpdateOrderController {
                                 )
                 ) {
 
-                    ps.setInt(1, orderId);
+                    ps.setInt(
+                            1,
+                            orderId
+                    );
+
 
                     try (
                             ResultSet rs =
@@ -548,20 +657,23 @@ public class UpdateOrderController {
 
                         if (!rs.next()) {
 
-                            throw new SQLException(
+                            throw new Exception(
                                     "Order not found."
                             );
                         }
 
+
                         customerId =
-                                rs.getInt("customer_id");
+                                rs.getInt(
+                                        "customer_id"
+                                );
                     }
                 }
 
 
-                // ---------------------------------------------
-                // 4. Update customer information
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 4. UPDATE CUSTOMER
+                // -------------------------------------------------
 
                 String updateCustomerSql = """
                         UPDATE customers
@@ -570,6 +682,7 @@ public class UpdateOrderController {
                         WHERE id = ?
                         """;
 
+
                 try (
                         PreparedStatement ps =
                                 conn.prepareStatement(
@@ -577,17 +690,28 @@ public class UpdateOrderController {
                                 )
                 ) {
 
-                    ps.setString(1, name);
-                    ps.setString(2, phone);
-                    ps.setInt(3, customerId);
+                    ps.setString(
+                            1,
+                            name
+                    );
+
+                    ps.setString(
+                            2,
+                            phone
+                    );
+
+                    ps.setInt(
+                            3,
+                            customerId
+                    );
 
                     ps.executeUpdate();
                 }
 
 
-                // ---------------------------------------------
-                // 5. Update order
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 5. UPDATE ORDER
+                // -------------------------------------------------
 
                 String updateOrderSql = """
                         UPDATE orders
@@ -596,6 +720,10 @@ public class UpdateOrderController {
                             notes = ?
                         WHERE id = ?
                         """;
+
+
+                int updatedOrders;
+
 
                 try (
                         PreparedStatement ps =
@@ -616,7 +744,9 @@ public class UpdateOrderController {
 
                     ps.setString(
                             3,
-                            notes
+                            notes.isEmpty()
+                                    ? null
+                                    : notes
                     );
 
                     ps.setInt(
@@ -624,13 +754,23 @@ public class UpdateOrderController {
                             orderId
                     );
 
-                    ps.executeUpdate();
+
+                    updatedOrders =
+                            ps.executeUpdate();
                 }
 
 
-                // ---------------------------------------------
-                // 6. Update order item
-                // ---------------------------------------------
+                if (updatedOrders == 0) {
+
+                    throw new Exception(
+                            "Order could not be updated."
+                    );
+                }
+
+
+                // -------------------------------------------------
+                // 6. UPDATE ORDER ITEM
+                // -------------------------------------------------
 
                 String updateItemSql = """
                         UPDATE order_items
@@ -641,6 +781,10 @@ public class UpdateOrderController {
                         WHERE order_id = ?
                         """;
 
+
+                int updatedItems;
+
+
                 try (
                         PreparedStatement ps =
                                 conn.prepareStatement(
@@ -648,9 +792,15 @@ public class UpdateOrderController {
                                 )
                 ) {
 
-                    ps.setInt(1, serviceId);
+                    ps.setInt(
+                            1,
+                            serviceId
+                    );
 
-                    ps.setInt(2, quantity);
+                    ps.setInt(
+                            2,
+                            quantity
+                    );
 
                     ps.setDouble(
                             3,
@@ -667,44 +817,54 @@ public class UpdateOrderController {
                             orderId
                     );
 
-                    ps.executeUpdate();
+
+                    updatedItems =
+                            ps.executeUpdate();
                 }
 
 
-                // ---------------------------------------------
-                // 7. Commit
-                // ---------------------------------------------
+                if (updatedItems == 0) {
+
+                    throw new Exception(
+                            "Order item could not be updated."
+                    );
+                }
+
+
+                // -------------------------------------------------
+                // 7. COMMIT
+                // -------------------------------------------------
 
                 conn.commit();
 
 
-                // ---------------------------------------------
-                // 8. Success
-                // ---------------------------------------------
+                // -------------------------------------------------
+                // 8. SUCCESS
+                // -------------------------------------------------
 
-                showAlert(
-                        "Success",
+                showSuccess(
                         "Order updated successfully."
                 );
 
 
-                // Back to Order Management
+                // Go back to Order Management
+
                 goOrderManagement();
 
 
             } catch (Exception e) {
 
-                // Rollback if anything fails
                 conn.rollback();
 
                 throw e;
             }
 
+
         } catch (Exception e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Update Failed",
                     "Could not update order.\n\n"
                             + e.getMessage()
@@ -724,7 +884,8 @@ public class UpdateOrderController {
 
         phoneField.clear();
 
-        serviceBox.setValue(null);
+        serviceBox.getSelectionModel()
+                .clearSelection();
 
         quantityField.clear();
 
@@ -744,20 +905,19 @@ public class UpdateOrderController {
 
         try {
 
-            FXMLLoader loader =
-                    new FXMLLoader(
+            Parent root =
+                    FXMLLoader.load(
                             getClass().getResource(
                                     "/fxml/order-management.fxml"
                             )
                     );
 
-            Parent root =
-                    loader.load();
 
             Stage stage =
-                    (Stage) nameField
-                            .getScene()
-                            .getWindow();
+                    (Stage)
+                            nameField.getScene()
+                                    .getWindow();
+
 
             stage.setScene(
                     new Scene(root)
@@ -767,11 +927,12 @@ public class UpdateOrderController {
 
             stage.show();
 
+
         } catch (IOException e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Navigation Error",
                     "Could not open Order Management."
             );
@@ -784,42 +945,42 @@ public class UpdateOrderController {
     // =========================================================
 
     @FXML
-    private void goDashboard(ActionEvent event) {
+    private void goDashboard(
+            ActionEvent event
+    ) {
+
+        String dashboardPath;
+
+
+        if ("ADMIN".equalsIgnoreCase(
+                Session.role
+        )) {
+
+            dashboardPath =
+                    "/fxml/admin-dashboard.fxml";
+
+        } else if ("STAFF".equalsIgnoreCase(
+                Session.role
+        )) {
+
+            dashboardPath =
+                    "/fxml/staff-dashboard.fxml";
+
+        } else {
+
+            dashboardPath =
+                    "/fxml/customer-dashboard.fxml";
+        }
+
 
         try {
 
-            String dashboardPath;
-
-            if (Session.role != null &&
-                    Session.role.equalsIgnoreCase("ADMIN")) {
-
-                dashboardPath =
-                        "/fxml/admin-dashboard.fxml";
-
-            } else if (
-                    Session.role != null &&
-                            Session.role.equalsIgnoreCase("STAFF")
-            ) {
-
-                dashboardPath =
-                        "/fxml/staff-dashboard.fxml";
-
-            } else {
-
-                dashboardPath =
-                        "/fxml/customer-dashboard.fxml";
-            }
-
-
-            FXMLLoader loader =
-                    new FXMLLoader(
+            Parent root =
+                    FXMLLoader.load(
                             getClass().getResource(
                                     dashboardPath
                             )
                     );
-
-            Parent root =
-                    loader.load();
 
 
             Stage stage =
@@ -837,11 +998,12 @@ public class UpdateOrderController {
 
             stage.show();
 
+
         } catch (IOException e) {
 
             e.printStackTrace();
 
-            showAlert(
+            showError(
                     "Navigation Error",
                     "Could not open dashboard.\n\n"
                             + e.getMessage()
@@ -851,17 +1013,71 @@ public class UpdateOrderController {
 
 
     // =========================================================
-    // ALERT
+    // WARNING
     // =========================================================
 
-    private void showAlert(
-            String title,
+    private void showWarning(
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.WARNING
+                );
+
+        alert.setTitle(
+                "Validation Error"
+        );
+
+        alert.setHeaderText(null);
+
+        alert.setContentText(
+                message
+        );
+
+        alert.showAndWait();
+    }
+
+
+    // =========================================================
+    // SUCCESS
+    // =========================================================
+
+    private void showSuccess(
             String message
     ) {
 
         Alert alert =
                 new Alert(
                         Alert.AlertType.INFORMATION
+                );
+
+        alert.setTitle(
+                "Success"
+        );
+
+        alert.setHeaderText(null);
+
+        alert.setContentText(
+                message
+        );
+
+        alert.showAndWait();
+    }
+
+
+    // =========================================================
+    // ERROR
+    // =========================================================
+
+    private void showError(
+            String title,
+            String message
+    ) {
+
+        Alert alert =
+                new Alert(
+                        Alert.AlertType.ERROR
                 );
 
         alert.setTitle(title);
