@@ -1,7 +1,6 @@
 package controller;
 
 import database.DBConnection;
-import javafx.beans.binding.Bindings;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -62,6 +61,11 @@ public class OrderManagementController {
     private final ObservableList<Order> orderList =
             FXCollections.observableArrayList();
 
+
+    // =========================================================
+    // INITIALIZE
+    // =========================================================
+
     @FXML
     public void initialize() {
 
@@ -88,8 +92,11 @@ public class OrderManagementController {
                     } else {
 
                         selectedOrderLabel.setText("None");
+
                         statusBox.setValue(null);
                     }
+
+                    updateStatusButtonState();
                 });
 
         updateStatusButtonState();
@@ -176,15 +183,18 @@ public class OrderManagementController {
 
         boolean noOrderSelected =
                 ordersTable == null ||
-                        ordersTable.getSelectionModel().getSelectedItem() == null;
+                        ordersTable.getSelectionModel()
+                                .getSelectedItem() == null;
 
         boolean noStatusSelected =
                 statusBox == null ||
                         statusBox.getValue() == null;
 
         if (statusUpdateBtn != null) {
+
             statusUpdateBtn.setDisable(
-                    noOrderSelected || noStatusSelected
+                    noOrderSelected ||
+                            noStatusSelected
             );
         }
     }
@@ -217,9 +227,14 @@ public class OrderManagementController {
                 """;
 
         try (
-                Connection conn = DBConnection.getConnection();
-                PreparedStatement ps = conn.prepareStatement(sql);
-                ResultSet rs = ps.executeQuery()
+                Connection conn =
+                        DBConnection.getConnection();
+
+                PreparedStatement ps =
+                        conn.prepareStatement(sql);
+
+                ResultSet rs =
+                        ps.executeQuery()
         ) {
 
             while (rs.next()) {
@@ -259,34 +274,10 @@ public class OrderManagementController {
     @FXML
     private void addOrder(ActionEvent event) {
 
-        try {
-
-            FXMLLoader loader =
-                    new FXMLLoader(
-                            getClass().getResource(
-                                    "/fxml/new-order.fxml"
-                            )
-                    );
-
-            Parent root = loader.load();
-
-            Stage stage =
-                    (Stage) ((Node) event.getSource())
-                            .getScene()
-                            .getWindow();
-
-            stage.setScene(new Scene(root));
-            stage.show();
-
-        } catch (Exception e) {
-
-            e.printStackTrace();
-
-            showError(
-                    "Navigation Error",
-                    "Could not open New Order page."
-            );
-        }
+        loadPage(
+                event,
+                "/fxml/new-order.fxml"
+        );
     }
 
 
@@ -298,7 +289,8 @@ public class OrderManagementController {
     private void updateOrder(ActionEvent event) {
 
         Order selectedOrder =
-                ordersTable.getSelectionModel().getSelectedItem();
+                ordersTable.getSelectionModel()
+                        .getSelectedItem();
 
         if (selectedOrder == null) {
 
@@ -311,7 +303,9 @@ public class OrderManagementController {
         }
 
         int orderId =
-                extractOrderId(selectedOrder.getOrderId());
+                extractOrderId(
+                        selectedOrder.getOrderId()
+                );
 
         try {
 
@@ -334,7 +328,10 @@ public class OrderManagementController {
                             .getScene()
                             .getWindow();
 
-            stage.setScene(new Scene(root));
+            stage.setScene(
+                    new Scene(root)
+            );
+
             stage.show();
 
         } catch (Exception e) {
@@ -357,7 +354,8 @@ public class OrderManagementController {
     private void deleteOrder(ActionEvent event) {
 
         Order selectedOrder =
-                ordersTable.getSelectionModel().getSelectedItem();
+                ordersTable.getSelectionModel()
+                        .getSelectedItem();
 
         if (selectedOrder == null) {
 
@@ -370,11 +368,16 @@ public class OrderManagementController {
         }
 
         Alert confirmation =
-                new Alert(Alert.AlertType.CONFIRMATION);
+                new Alert(
+                        Alert.AlertType.CONFIRMATION
+                );
 
         confirmation.setTitle("Delete Order");
+
         confirmation.setHeaderText(
-                "Delete " + selectedOrder.getOrderId() + "?"
+                "Delete "
+                        + selectedOrder.getOrderId()
+                        + "?"
         );
 
         confirmation.setContentText(
@@ -384,14 +387,16 @@ public class OrderManagementController {
         Optional<ButtonType> result =
                 confirmation.showAndWait();
 
-        if (result.isEmpty() ||
-                result.get() != ButtonType.OK) {
+        if (result.isEmpty()
+                || result.get() != ButtonType.OK) {
 
             return;
         }
 
         int orderId =
-                extractOrderId(selectedOrder.getOrderId());
+                extractOrderId(
+                        selectedOrder.getOrderId()
+                );
 
         String deleteItemsSql =
                 "DELETE FROM order_items WHERE order_id = ?";
@@ -399,8 +404,10 @@ public class OrderManagementController {
         String deleteOrderSql =
                 "DELETE FROM orders WHERE id = ?";
 
-        try (Connection conn =
-                     DBConnection.getConnection()) {
+        try (
+                Connection conn =
+                        DBConnection.getConnection()
+        ) {
 
             conn.setAutoCommit(false);
 
@@ -417,6 +424,7 @@ public class OrderManagementController {
             ) {
 
                 deleteItems.setInt(1, orderId);
+
                 deleteItems.executeUpdate();
 
                 deleteOrder.setInt(1, orderId);
@@ -447,7 +455,11 @@ public class OrderManagementController {
             loadOrders();
 
             selectedOrderLabel.setText("None");
+
             statusBox.setValue(null);
+
+            ordersTable.getSelectionModel()
+                    .clearSelection();
 
         } catch (Exception e) {
 
@@ -478,7 +490,9 @@ public class OrderManagementController {
             ordersTable.setItems(orderList);
 
             totalOrdersLabel.setText(
-                    String.valueOf(orderList.size())
+                    String.valueOf(
+                            orderList.size()
+                    )
             );
 
             return;
@@ -518,7 +532,9 @@ public class OrderManagementController {
         ordersTable.setItems(filtered);
 
         totalOrdersLabel.setText(
-                String.valueOf(filtered.size())
+                String.valueOf(
+                        filtered.size()
+                )
         );
     }
 
@@ -550,8 +566,8 @@ public class OrderManagementController {
         String newStatus =
                 statusBox.getValue();
 
-        if (newStatus == null ||
-                newStatus.isBlank()) {
+        if (newStatus == null
+                || newStatus.isBlank()) {
 
             showWarning(
                     "No Status Selected",
@@ -561,7 +577,9 @@ public class OrderManagementController {
             return;
         }
 
-        if (currentStatus.equalsIgnoreCase(newStatus)) {
+        if (currentStatus.equalsIgnoreCase(
+                newStatus
+        )) {
 
             showWarning(
                     "Same Status",
@@ -578,12 +596,21 @@ public class OrderManagementController {
 
         boolean validTransition = false;
 
-        switch (currentStatus.toUpperCase()) {
+        switch (
+                currentStatus.toUpperCase()
+        ) {
 
             case "PENDING":
 
-                if (newStatus.equalsIgnoreCase("PROCESSING")
-                        || newStatus.equalsIgnoreCase("CANCELLED")) {
+                if (
+                        newStatus.equalsIgnoreCase(
+                                "PROCESSING"
+                        )
+                                ||
+                                newStatus.equalsIgnoreCase(
+                                        "CANCELLED"
+                                )
+                ) {
 
                     validTransition = true;
                 }
@@ -593,8 +620,15 @@ public class OrderManagementController {
 
             case "PROCESSING":
 
-                if (newStatus.equalsIgnoreCase("READY")
-                        || newStatus.equalsIgnoreCase("CANCELLED")) {
+                if (
+                        newStatus.equalsIgnoreCase(
+                                "READY"
+                        )
+                                ||
+                                newStatus.equalsIgnoreCase(
+                                        "CANCELLED"
+                                )
+                ) {
 
                     validTransition = true;
                 }
@@ -604,7 +638,11 @@ public class OrderManagementController {
 
             case "READY":
 
-                if (newStatus.equalsIgnoreCase("DELIVERED")) {
+                if (
+                        newStatus.equalsIgnoreCase(
+                                "DELIVERED"
+                        )
+                ) {
 
                     validTransition = true;
                 }
@@ -633,7 +671,6 @@ public class OrderManagementController {
         }
 
 
-        // Invalid transition
         if (!validTransition) {
 
             showWarning(
@@ -645,7 +682,9 @@ public class OrderManagementController {
                             + "."
             );
 
-            statusBox.setValue(currentStatus);
+            statusBox.setValue(
+                    currentStatus
+            );
 
             return;
         }
@@ -662,26 +701,26 @@ public class OrderManagementController {
 
         String sql;
 
-        /*
-         * When order becomes DELIVERED,
-         * automatically save today's date.
-         */
-        if ("DELIVERED".equalsIgnoreCase(newStatus)) {
+        if (
+                "DELIVERED".equalsIgnoreCase(
+                        newStatus
+                )
+        ) {
 
             sql = """
-                UPDATE orders
-                SET status = ?,
-                    delivery_date = date('now')
-                WHERE id = ?
-                """;
+                    UPDATE orders
+                    SET status = ?,
+                        delivery_date = date('now')
+                    WHERE id = ?
+                    """;
 
         } else {
 
             sql = """
-                UPDATE orders
-                SET status = ?
-                WHERE id = ?
-                """;
+                    UPDATE orders
+                    SET status = ?
+                    WHERE id = ?
+                    """;
         }
 
 
@@ -694,6 +733,7 @@ public class OrderManagementController {
         ) {
 
             ps.setString(1, newStatus);
+
             ps.setInt(2, orderId);
 
             int updated =
@@ -709,7 +749,6 @@ public class OrderManagementController {
                 return;
             }
 
-
             showSuccess(
                     "Status Updated",
                     "Order "
@@ -721,11 +760,12 @@ public class OrderManagementController {
                             + "."
             );
 
-
-            // Refresh table
             loadOrders();
 
-            selectedOrderLabel.setText("None");
+            selectedOrderLabel.setText(
+                    "None"
+            );
+
             statusBox.setValue(null);
 
             ordersTable.getSelectionModel()
@@ -750,32 +790,85 @@ public class OrderManagementController {
     @FXML
     private void goDashboard(ActionEvent event) {
 
+        String dashboardPath;
+
+        if (
+                Session.role != null
+                        &&
+                        Session.role.equalsIgnoreCase(
+                                "ADMIN"
+                        )
+        ) {
+
+            dashboardPath =
+                    "/fxml/admin-dashboard.fxml";
+
+        } else if (
+                Session.role != null
+                        &&
+                        Session.role.equalsIgnoreCase(
+                                "STAFF"
+                        )
+        ) {
+
+            dashboardPath =
+                    "/fxml/staff-dashboard.fxml";
+
+        } else if (
+                Session.role != null
+                        &&
+                        Session.role.equalsIgnoreCase(
+                                "CUSTOMER"
+                        )
+        ) {
+
+            dashboardPath =
+                    "/fxml/customer-dashboard.fxml";
+
+        } else {
+
+            dashboardPath =
+                    "/fxml/Login.fxml";
+        }
+
+
+        loadPage(
+                event,
+                dashboardPath
+        );
+    }
+
+
+    // =========================================================
+    // PAGE LOADER
+    // =========================================================
+
+    private void loadPage(
+            ActionEvent event,
+            String path
+    ) {
+
         try {
-
-            String dashboard;
-
-            if ("STAFF".equalsIgnoreCase(Session.role)) {
-
-                dashboard = "/fxml/staff-dashboard.fxml";
-
-            } else {
-
-                dashboard = "/fxml/admin-dashboard.fxml";
-            }
 
             FXMLLoader loader =
                     new FXMLLoader(
-                            getClass().getResource(dashboard)
+                            getClass().getResource(path)
                     );
 
-            Parent root = loader.load();
+            Parent root =
+                    loader.load();
 
             Stage stage =
                     (Stage) ((Node) event.getSource())
                             .getScene()
                             .getWindow();
 
-            stage.setScene(new Scene(root));
+            stage.setScene(
+                    new Scene(root)
+            );
+
+            stage.setMaximized(true);
+
             stage.show();
 
         } catch (Exception e) {
@@ -784,7 +877,7 @@ public class OrderManagementController {
 
             showError(
                     "Navigation Error",
-                    "Could not open dashboard."
+                    "Cannot open page:\n" + path
             );
         }
     }
@@ -794,10 +887,15 @@ public class OrderManagementController {
     // HELPER METHODS
     // =========================================================
 
-    private int extractOrderId(String orderId) {
+    private int extractOrderId(
+            String orderId
+    ) {
 
         return Integer.parseInt(
-                orderId.replace("ORD-", "")
+                orderId.replace(
+                        "ORD-",
+                        ""
+                )
         );
     }
 
@@ -807,11 +905,16 @@ public class OrderManagementController {
             String search
     ) {
 
-        return value != null &&
+        return value != null
+                &&
                 value.toLowerCase()
                         .contains(search);
     }
 
+
+    // =========================================================
+    // ALERT - WARNING
+    // =========================================================
 
     private void showWarning(
             String title,
@@ -819,14 +922,23 @@ public class OrderManagementController {
     ) {
 
         Alert alert =
-                new Alert(Alert.AlertType.WARNING);
+                new Alert(
+                        Alert.AlertType.WARNING
+                );
 
         alert.setTitle(title);
+
         alert.setHeaderText(null);
+
         alert.setContentText(message);
+
         alert.showAndWait();
     }
 
+
+    // =========================================================
+    // ALERT - SUCCESS
+    // =========================================================
 
     private void showSuccess(
             String title,
@@ -834,14 +946,23 @@ public class OrderManagementController {
     ) {
 
         Alert alert =
-                new Alert(Alert.AlertType.INFORMATION);
+                new Alert(
+                        Alert.AlertType.INFORMATION
+                );
 
         alert.setTitle(title);
+
         alert.setHeaderText(null);
+
         alert.setContentText(message);
+
         alert.showAndWait();
     }
 
+
+    // =========================================================
+    // ALERT - ERROR
+    // =========================================================
 
     private void showError(
             String title,
@@ -849,11 +970,16 @@ public class OrderManagementController {
     ) {
 
         Alert alert =
-                new Alert(Alert.AlertType.ERROR);
+                new Alert(
+                        Alert.AlertType.ERROR
+                );
 
         alert.setTitle(title);
+
         alert.setHeaderText(null);
+
         alert.setContentText(message);
+
         alert.showAndWait();
     }
 }

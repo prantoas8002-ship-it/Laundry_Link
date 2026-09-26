@@ -8,7 +8,9 @@
             fx:controller="controller.StaffDashboardController"
             style="-fx-background-color:#0B1120;">
 
+    <!-- ===================================================== -->
     <!-- SIDEBAR -->
+    <!-- ===================================================== -->
 
     <left>
         <VBox prefWidth="240"
@@ -26,6 +28,8 @@
 
             <Separator/>
 
+            <!-- HOME -->
+
             <Button fx:id="homeBtn"
                     text="🏠 Home"
                     onAction="#showHome"
@@ -38,6 +42,8 @@
                            -fx-alignment:CENTER_LEFT;
                            -fx-background-radius:12;
                            -fx-padding:0 0 0 18;" />
+
+            <!-- NEW ORDER -->
 
             <Button fx:id="newOrderBtn"
                     text="📝 New Order"
@@ -52,9 +58,11 @@
                            -fx-background-radius:12;
                            -fx-padding:0 0 0 18;" />
 
-            <Button fx:id="processingBtn"
-                    text="🔄 Processing"
-                    onAction="#openProcessing"
+            <!-- ORDER MANAGEMENT -->
+
+            <Button fx:id="orderManagementBtn"
+                    text="📋 Order Management"
+                    onAction="#openOrderManagement"
                     maxWidth="Infinity"
                     prefHeight="46"
                     style="-fx-background-color:transparent;
@@ -65,18 +73,7 @@
                            -fx-background-radius:12;
                            -fx-padding:0 0 0 18;" />
 
-            <Button fx:id="deliveryBtn"
-                    text="🚚 Delivery"
-                    onAction="#openDelivery"
-                    maxWidth="Infinity"
-                    prefHeight="46"
-                    style="-fx-background-color:transparent;
-                           -fx-text-fill:#CBD5E1;
-                           -fx-font-size:14px;
-                           -fx-font-weight:bold;
-                           -fx-alignment:CENTER_LEFT;
-                           -fx-background-radius:12;
-                           -fx-padding:0 0 0 18;" />
+            <!-- INVENTORY -->
 
             <Button fx:id="inventoryBtn"
                     text="📦 Inventory"
@@ -91,20 +88,9 @@
                            -fx-background-radius:12;
                            -fx-padding:0 0 0 18;" />
 
-            <Button fx:id="settingsBtn"
-                    text="⚙ Settings"
-                    onAction="#openSettings"
-                    maxWidth="Infinity"
-                    prefHeight="46"
-                    style="-fx-background-color:transparent;
-                           -fx-text-fill:#CBD5E1;
-                           -fx-font-size:14px;
-                           -fx-font-weight:bold;
-                           -fx-alignment:CENTER_LEFT;
-                           -fx-background-radius:12;
-                           -fx-padding:0 0 0 18;" />
-
             <Region VBox.vgrow="ALWAYS"/>
+
+            <!-- LOGOUT -->
 
             <Button fx:id="logoutBtn"
                     text="Logout"
@@ -119,7 +105,10 @@
         </VBox>
     </left>
 
+
+    <!-- ===================================================== -->
     <!-- MAIN CONTENT -->
+    <!-- ===================================================== -->
 
     <center>
 
@@ -145,6 +134,8 @@
 
                 <Region HBox.hgrow="ALWAYS"/>
 
+                <!-- SEARCH -->
+
                 <TextField fx:id="searchField"
                            promptText="Search orders..."
                            onAction="#searchOrders"
@@ -154,9 +145,14 @@
 
             </HBox>
 
+
+            <!-- ================================================= -->
             <!-- KPI CARDS -->
+            <!-- ================================================= -->
 
             <HBox spacing="18">
+
+                <!-- PENDING -->
 
                 <VBox HBox.hgrow="ALWAYS"
                       spacing="8"
@@ -168,12 +164,15 @@
                            style="-fx-text-fill:#94A3B8;" />
 
                     <Label fx:id="pendingOrdersLabel"
-                           text="12"
+                           text="0"
                            style="-fx-text-fill:#F59E0B;
                                   -fx-font-size:28px;
                                   -fx-font-weight:bold;" />
 
                 </VBox>
+
+
+                <!-- PROCESSING -->
 
                 <VBox HBox.hgrow="ALWAYS"
                       spacing="8"
@@ -185,12 +184,15 @@
                            style="-fx-text-fill:#94A3B8;" />
 
                     <Label fx:id="washingOrdersLabel"
-                           text="8"
+                           text="0"
                            style="-fx-text-fill:#4F46E5;
                                   -fx-font-size:28px;
                                   -fx-font-weight:bold;" />
 
                 </VBox>
+
+
+                <!-- READY -->
 
                 <VBox HBox.hgrow="ALWAYS"
                       spacing="8"
@@ -202,12 +204,15 @@
                            style="-fx-text-fill:#94A3B8;" />
 
                     <Label fx:id="readyDeliveryLabel"
-                           text="5"
+                           text="0"
                            style="-fx-text-fill:#10B981;
                                   -fx-font-size:28px;
                                   -fx-font-weight:bold;" />
 
                 </VBox>
+
+
+                <!-- COMPLETED -->
 
                 <VBox HBox.hgrow="ALWAYS"
                       spacing="8"
@@ -219,7 +224,7 @@
                            style="-fx-text-fill:#94A3B8;" />
 
                     <Label fx:id="completedTodayLabel"
-                           text="17"
+                           text="0"
                            style="-fx-text-fill:white;
                                   -fx-font-size:28px;
                                   -fx-font-weight:bold;" />
@@ -228,12 +233,18 @@
 
             </HBox>
 
+
+            <!-- ================================================= -->
             <!-- WORKSPACE -->
+            <!-- ================================================= -->
 
             <HBox spacing="20"
                   VBox.vgrow="ALWAYS">
 
-                <!-- TASK LIST -->
+
+                <!-- ================================================= -->
+                <!-- TODAY'S WORK QUEUE -->
+                <!-- ================================================= -->
 
                 <VBox HBox.hgrow="ALWAYS"
                       spacing="12"
@@ -246,36 +257,51 @@
                                   -fx-font-size:18px;
                                   -fx-font-weight:bold;" />
 
+
                     <HBox spacing="10"
                           style="-fx-background-color:#273449;
                                  -fx-background-radius:10;
                                  -fx-padding:12;">
+
                         <CheckBox/>
+
                         <Label text="Order #1001 - Wash 5 Shirts"
                                style="-fx-text-fill:white;"/>
+
                     </HBox>
+
 
                     <HBox spacing="10"
                           style="-fx-background-color:#273449;
                                  -fx-background-radius:10;
                                  -fx-padding:12;">
+
                         <CheckBox/>
+
                         <Label text="Order #1002 - Iron Uniform"
                                style="-fx-text-fill:white;"/>
+
                     </HBox>
+
 
                     <HBox spacing="10"
                           style="-fx-background-color:#273449;
                                  -fx-background-radius:10;
                                  -fx-padding:12;">
+
                         <CheckBox/>
+
                         <Label text="Order #1003 - Dry Cleaning"
                                style="-fx-text-fill:white;"/>
+
                     </HBox>
 
                 </VBox>
 
+
+                <!-- ================================================= -->
                 <!-- QUICK ACTIONS -->
+                <!-- ================================================= -->
 
                 <VBox prefWidth="260"
                       spacing="15"
@@ -288,6 +314,9 @@
                                   -fx-font-size:18px;
                                   -fx-font-weight:bold;" />
 
+
+                    <!-- CREATE ORDER -->
+
                     <Button text="+ Create New Order"
                             onAction="#createNewOrder"
                             maxWidth="Infinity"
@@ -297,6 +326,9 @@
                                    -fx-font-weight:bold;
                                    -fx-background-radius:12;" />
 
+
+                    <!-- UPDATE STATUS -->
+
                     <Button text="✓ Update Status"
                             onAction="#updateStatus"
                             maxWidth="Infinity"
@@ -305,6 +337,9 @@
                                    -fx-text-fill:white;
                                    -fx-font-weight:bold;
                                    -fx-background-radius:12;" />
+
+
+                    <!-- MARK DELIVERED -->
 
                     <Button text="🚚 Mark Delivered"
                             onAction="#markDelivered"
