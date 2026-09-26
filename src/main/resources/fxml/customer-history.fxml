@@ -1,32 +1,32 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-        <?import javafx.geometry.Insets?>
-        <?import javafx.scene.control.Button?>
-        <?import javafx.scene.control.Label?>
-        <?import javafx.scene.control.TableColumn?>
-        <?import javafx.scene.control.TableView?>
-        <?import javafx.scene.control.TextField?>
-        <?import javafx.scene.layout.BorderPane?>
-        <?import javafx.scene.layout.HBox?>
-        <?import javafx.scene.layout.Region?>
-        <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 
 <BorderPane prefHeight="800.0"
             prefWidth="1200.0"
             style="-fx-background-color:#0B1120;"
-            xmlns="http://javafx.com/javafx/26"
+            xmlns="http://javafx.com/javafx/25"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.CustomerHistoryController">
 
     <center>
 
-        <VBox spacing="20">
+        <VBox spacing="18">
 
             <padding>
                 <Insets top="25" right="25" bottom="25" left="25"/>
             </padding>
 
-            <!-- Header -->
+            <!-- HEADER -->
 
             <HBox alignment="CENTER_LEFT" spacing="15">
 
@@ -37,11 +37,13 @@
                                   -fx-font-size:30px;
                                   -fx-font-weight:bold;"/>
 
-                    <Label text="View customer order history and activity records"
+                    <Label text="View customer information and individual order history"
                            style="-fx-text-fill:#94A3B8;
                                   -fx-font-size:14px;"/>
 
                 </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
 
                 <Button fx:id="dashboardBtn"
                         text="🏠 Dashboard"
@@ -57,7 +59,8 @@
 
             </HBox>
 
-            <!-- Search Section -->
+
+            <!-- SEARCH -->
 
             <HBox alignment="CENTER_LEFT"
                   spacing="15"
@@ -67,7 +70,7 @@
 
                 <TextField fx:id="searchField"
                            prefHeight="45"
-                           prefWidth="300"
+                           prefWidth="320"
                            promptText="Search Customer ID or Name..."
                            style="-fx-background-color:#1E293B;
                                   -fx-control-inner-background:#1E293B;
@@ -87,6 +90,15 @@
                                -fx-font-weight:bold;
                                -fx-background-radius:10;"/>
 
+                <Button text="Clear"
+                        onAction="#clearSearch"
+                        prefHeight="45"
+                        prefWidth="90"
+                        style="-fx-background-color:#334155;
+                               -fx-text-fill:white;
+                               -fx-font-weight:bold;
+                               -fx-background-radius:10;"/>
+
                 <Region HBox.hgrow="ALWAYS"/>
 
                 <Label text="Total Customers:"
@@ -101,20 +113,25 @@
 
             </HBox>
 
-            <!-- Customer History Table -->
 
-            <VBox spacing="15"
+            <!-- CUSTOMER SUMMARY -->
+
+            <VBox spacing="12"
                   style="-fx-background-color:#111827;
                          -fx-background-radius:18;
                          -fx-padding:20;"
                   VBox.vgrow="ALWAYS">
 
-                <Label text="History Records"
+                <Label text="Customer Summary"
                        style="-fx-text-fill:white;
                               -fx-font-size:18px;
                               -fx-font-weight:bold;"/>
 
-                <TableView fx:id="historyTable"
+                <Label text="Select a customer to view their order history"
+                       style="-fx-text-fill:#64748B;
+                              -fx-font-size:13px;"/>
+
+                <TableView fx:id="customerTable"
                            VBox.vgrow="ALWAYS">
 
                     <columns>
@@ -124,6 +141,88 @@
 
                         <TableColumn fx:id="customerNameCol"
                                      text="Customer Name"/>
+
+                        <TableColumn fx:id="phoneCol"
+                                     text="Phone"/>
+
+                        <TableColumn fx:id="emailCol"
+                                     text="Email"/>
+
+                        <TableColumn fx:id="totalOrdersCol"
+                                     text="Total Orders"/>
+
+                        <TableColumn fx:id="totalSpentCol"
+                                     text="Total Spent"/>
+
+                    </columns>
+
+                </TableView>
+
+            </VBox>
+
+
+            <!-- SELECTED CUSTOMER INFO -->
+
+            <HBox alignment="CENTER_LEFT"
+                  spacing="25"
+                  style="-fx-background-color:#1E293B;
+                         -fx-background-radius:12;
+                         -fx-padding:15;">
+
+                <Label text="Selected Customer:"
+                       style="-fx-text-fill:#94A3B8;
+                              -fx-font-weight:bold;"/>
+
+                <Label fx:id="selectedCustomerLabel"
+                       text="None"
+                       style="-fx-text-fill:white;
+                              -fx-font-weight:bold;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Label text="Total Orders:"
+                       style="-fx-text-fill:#94A3B8;
+                              -fx-font-weight:bold;"/>
+
+                <Label fx:id="selectedTotalOrdersLabel"
+                       text="0"
+                       style="-fx-text-fill:white;
+                              -fx-font-weight:bold;"/>
+
+                <Label text="Total Spent:"
+                       style="-fx-text-fill:#94A3B8;
+                              -fx-font-weight:bold;"/>
+
+                <Label fx:id="selectedTotalSpentLabel"
+                       text="৳0"
+                       style="-fx-text-fill:#10B981;
+                              -fx-font-weight:bold;"/>
+
+            </HBox>
+
+
+            <!-- ORDER HISTORY -->
+
+            <VBox spacing="12"
+                  style="-fx-background-color:#111827;
+                         -fx-background-radius:18;
+                         -fx-padding:20;"
+                  VBox.vgrow="ALWAYS">
+
+                <Label text="Selected Customer's Order History"
+                       style="-fx-text-fill:white;
+                              -fx-font-size:18px;
+                              -fx-font-weight:bold;"/>
+
+                <Label fx:id="orderHistoryHintLabel"
+                       text="Select a customer above"
+                       style="-fx-text-fill:#64748B;
+                              -fx-font-size:13px;"/>
+
+                <TableView fx:id="orderHistoryTable"
+                           VBox.vgrow="ALWAYS">
+
+                    <columns>
 
                         <TableColumn fx:id="orderIdCol"
                                      text="Order ID"/>
@@ -146,45 +245,6 @@
                     </columns>
 
                 </TableView>
-
-                <!-- Summary Card -->
-
-                <HBox alignment="CENTER_LEFT"
-                      spacing="25"
-                      style="-fx-background-color:#1E293B;
-                             -fx-background-radius:12;
-                             -fx-padding:15;">
-
-                    <Label text="Selected Customer:"
-                           style="-fx-text-fill:#94A3B8;
-                                  -fx-font-weight:bold;"/>
-
-                    <Label fx:id="selectedCustomerLabel"
-                           text="None"
-                           style="-fx-text-fill:white;
-                                  -fx-font-weight:bold;"/>
-
-                    <Region HBox.hgrow="ALWAYS"/>
-
-                    <Label text="Total Orders:"
-                           style="-fx-text-fill:#94A3B8;
-                                  -fx-font-weight:bold;"/>
-
-                    <Label fx:id="totalOrdersLabel"
-                           text="0"
-                           style="-fx-text-fill:white;
-                                  -fx-font-weight:bold;"/>
-
-                    <Label text="Total Spent:"
-                           style="-fx-text-fill:#94A3B8;
-                                  -fx-font-weight:bold;"/>
-
-                    <Label fx:id="totalSpentLabel"
-                           text="৳0"
-                           style="-fx-text-fill:#10B981;
-                                  -fx-font-weight:bold;"/>
-
-                </HBox>
 
             </VBox>
 

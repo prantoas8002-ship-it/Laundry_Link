@@ -68,36 +68,9 @@ public class DatabaseSeeder {
             // =========================
             // INVENTORY
             // =========================
-
-            insertInventory(
-                    conn,
-                    "Detergent",
-                    "Cleaning",
-                    50,
-                    "kg",
-                    "Local Supplier",
-                    250
-            );
-
-            insertInventory(
-                    conn,
-                    "Fabric Softener",
-                    "Cleaning",
-                    30,
-                    "liter",
-                    "Local Supplier",
-                    350
-            );
-
-            insertInventory(
-                    conn,
-                    "Plastic Bag",
-                    "Packaging",
-                    500,
-                    "pcs",
-                    "Packaging Supplier",
-                    5
-            );
+            // No default inventory items.
+            // Inventory will be added manually
+            // from Inventory Management.
 
 
             System.out.println("Initial database data inserted.");
@@ -129,7 +102,6 @@ public class DatabaseSeeder {
                 return;
             }
         }
-
 
         String sql =
                 "INSERT INTO users(username, password, role) VALUES(?,?,?)";
@@ -168,7 +140,6 @@ public class DatabaseSeeder {
             }
         }
 
-
         String sql =
                 "INSERT INTO services(name, description, price) VALUES(?,?,?)";
 
@@ -178,53 +149,6 @@ public class DatabaseSeeder {
             ps.setString(1, name);
             ps.setString(2, description);
             ps.setDouble(3, price);
-
-            ps.executeUpdate();
-        }
-    }
-
-
-    private static void insertInventory(
-            Connection conn,
-            String itemName,
-            String category,
-            int quantity,
-            String unit,
-            String supplier,
-            double cost
-    ) throws Exception {
-
-        String checkSql =
-                "SELECT id FROM inventory WHERE item_name = ?";
-
-        try (PreparedStatement check =
-                     conn.prepareStatement(checkSql)) {
-
-            check.setString(1, itemName);
-
-            ResultSet rs = check.executeQuery();
-
-            if (rs.next()) {
-                return;
-            }
-        }
-
-
-        String sql = """
-                INSERT INTO inventory
-                (item_name, category, quantity, unit, supplier, cost)
-                VALUES(?,?,?,?,?,?)
-                """;
-
-        try (PreparedStatement ps =
-                     conn.prepareStatement(sql)) {
-
-            ps.setString(1, itemName);
-            ps.setString(2, category);
-            ps.setInt(3, quantity);
-            ps.setString(4, unit);
-            ps.setString(5, supplier);
-            ps.setDouble(6, cost);
 
             ps.executeUpdate();
         }

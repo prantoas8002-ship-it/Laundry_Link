@@ -1,34 +1,27 @@
-
 package model;
 
 public class CustomerHistory {
 
     private String customerId;
     private String customerName;
-    private String orderId;
-    private String service;
-    private int quantity;
-    private double amount;
-    private String date;
-    private String status;
+    private String phone;
+    private String email;
+    private int totalOrders;
+    private double totalSpent;
 
     public CustomerHistory(String customerId,
                            String customerName,
-                           String orderId,
-                           String service,
-                           int quantity,
-                           double amount,
-                           String date,
-                           String status) {
+                           String phone,
+                           String email,
+                           int totalOrders,
+                           double totalSpent) {
 
         this.customerId = customerId;
         this.customerName = customerName;
-        this.orderId = orderId;
-        this.service = service;
-        this.quantity = quantity;
-        this.amount = amount;
-        this.date = date;
-        this.status = status;
+        this.phone = phone;
+        this.email = email;
+        this.totalOrders = totalOrders;
+        this.totalSpent = totalSpent;
     }
 
     public String getCustomerId() {
@@ -47,51 +40,35 @@ public class CustomerHistory {
         this.customerName = customerName;
     }
 
-    public String getOrderId() {
-        return orderId;
+    public String getPhone() {
+        return phone;
     }
 
-    public void setOrderId(String orderId) {
-        this.orderId = orderId;
+    public void setPhone(String phone) {
+        this.phone = phone;
     }
 
-    public String getService() {
-        return service;
+    public String getEmail() {
+        return email;
     }
 
-    public void setService(String service) {
-        this.service = service;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public int getQuantity() {
-        return quantity;
+    public int getTotalOrders() {
+        return totalOrders;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
+    public void setTotalOrders(int totalOrders) {
+        this.totalOrders = totalOrders;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getTotalSpent() {
+        return totalSpent;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
+    public void setTotalSpent(double totalSpent) {
+        this.totalSpent = totalSpent;
     }
 }

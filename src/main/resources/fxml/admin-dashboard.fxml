@@ -4,7 +4,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/25"
-            xmlns:fx="http://javafx.com/fxml"
+            xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="controller.AdminDashboardController"
             style="-fx-background-color: #020617;">
 
@@ -70,7 +70,6 @@
                            -fx-text-fill: #CBD5E1;
                            -fx-font-weight: bold;" />
 
-
             <Region VBox.vgrow="ALWAYS"/>
 
             <Button fx:id="logoutBtn"
@@ -92,6 +91,7 @@
               BorderPane.alignment="CENTER"
               style="-fx-padding: 25;">
 
+            <!-- HEADER -->
             <HBox alignment="CENTER_LEFT">
 
                 <VBox spacing="5">
@@ -122,6 +122,8 @@
 
             </HBox>
 
+
+            <!-- STATISTICS -->
             <GridPane hgap="20" vgap="20">
 
                 <columnConstraints>
@@ -131,6 +133,8 @@
                     <ColumnConstraints percentWidth="25"/>
                 </columnConstraints>
 
+
+                <!-- TOTAL ORDERS -->
                 <VBox GridPane.columnIndex="0"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
@@ -141,13 +145,15 @@
                            style="-fx-text-fill: #94A3B8;" />
 
                     <Label fx:id="totalOrdersLabel"
-                           text="1245"
+                           text="0"
                            style="-fx-text-fill: white;
                                   -fx-font-size: 30;
                                   -fx-font-weight: bold;" />
 
                 </VBox>
 
+
+                <!-- PENDING ORDERS -->
                 <VBox GridPane.columnIndex="1"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
@@ -158,13 +164,15 @@
                            style="-fx-text-fill: #94A3B8;" />
 
                     <Label fx:id="pendingOrdersLabel"
-                           text="83"
+                           text="0"
                            style="-fx-text-fill: #F59E0B;
                                   -fx-font-size: 30;
                                   -fx-font-weight: bold;" />
 
                 </VBox>
 
+
+                <!-- COMPLETED -->
                 <VBox GridPane.columnIndex="2"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
@@ -175,13 +183,15 @@
                            style="-fx-text-fill: #94A3B8;" />
 
                     <Label fx:id="completedOrdersLabel"
-                           text="1162"
+                           text="0"
                            style="-fx-text-fill: #22C55E;
                                   -fx-font-size: 30;
                                   -fx-font-weight: bold;" />
 
                 </VBox>
 
+
+                <!-- REVENUE -->
                 <VBox GridPane.columnIndex="3"
                       spacing="10"
                       style="-fx-background-color: #1E293B;
@@ -192,7 +202,7 @@
                            style="-fx-text-fill: #94A3B8;" />
 
                     <Label fx:id="revenueLabel"
-                           text="12540"
+                           text="0.00"
                            style="-fx-text-fill: #38BDF8;
                                   -fx-font-size: 30;
                                   -fx-font-weight: bold;" />
@@ -201,6 +211,8 @@
 
             </GridPane>
 
+
+            <!-- RECENT ORDERS -->
             <VBox VBox.vgrow="ALWAYS"
                   spacing="15"
                   style="-fx-background-color: #1E293B;
@@ -219,28 +231,37 @@
                     <Button text="View All"
                             onAction="#viewAllOrders"
                             style="-fx-background-color: #3B82F6;
-                                   -fx-text-fill: white;" />
+                                   -fx-text-fill: white;
+                                   -fx-background-radius: 8;" />
 
                 </HBox>
+
 
                 <TableView fx:id="ordersTable"
                            VBox.vgrow="ALWAYS">
 
                     <columns>
 
-                        <TableColumn text="Order ID"
+                        <!-- IMPORTANT: fx:id added -->
+
+                        <TableColumn fx:id="orderIdColumn"
+                                     text="Order ID"
                                      prefWidth="120" />
 
-                        <TableColumn text="Customer"
+                        <TableColumn fx:id="customerColumn"
+                                     text="Customer"
                                      prefWidth="220" />
 
-                        <TableColumn text="Service"
+                        <TableColumn fx:id="serviceColumn"
+                                     text="Service"
                                      prefWidth="220" />
 
-                        <TableColumn text="Status"
+                        <TableColumn fx:id="statusColumn"
+                                     text="Status"
                                      prefWidth="180" />
 
-                        <TableColumn text="Amount"
+                        <TableColumn fx:id="amountColumn"
+                                     text="Amount"
                                      prefWidth="150" />
 
                     </columns>
