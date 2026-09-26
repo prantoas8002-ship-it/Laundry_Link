@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane prefHeight="1080.0" prefWidth="1920.0" style="-fx-background-color: #F5F8FC;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.CustomerOrdersController">
+
+    <children>
+
+        <!-- ===================================================== -->
+        <!-- LEFT SIDEBAR -->
+        <!-- ===================================================== -->
+
+        <VBox prefWidth="270.0" spacing="8.0" style="-fx-background-color: #0B4F6C;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+            <padding>
+                <Insets bottom="30" left="20" right="20" top="35" />
+            </padding>
+
+
+            <!-- LOGO -->
+
+            <HBox alignment="CENTER_LEFT" prefHeight="60" spacing="12">
+
+                <Label style="-fx-text-fill: white;                               -fx-font-size: 25px;                               -fx-font-weight: bold;" text="  LaundryLink" />
+
+            </HBox>
+
+
+            <!-- NAVIGATION -->
+
+            <VBox spacing="8" VBox.vgrow="ALWAYS">
+
+                <!-- Dashboard -->
+
+                <Button alignment="CENTER_LEFT" onAction="#goDashboard" prefHeight="50" prefWidth="230" style="-fx-background-color: transparent;                                -fx-text-fill: white;                                -fx-font-size: 15px;                                -fx-font-weight: bold;                                -fx-background-radius: 8;                                -fx-padding: 0 15 0 15;" text="⌂   Dashboard" />
+
+
+                <!-- Track Orders - ACTIVE -->
+
+                <Button alignment="CENTER_LEFT" disable="true" prefHeight="50" prefWidth="230" style="-fx-background-color: #176B87;                                -fx-text-fill: white;                                -fx-font-size: 15px;                                -fx-font-weight: bold;                                -fx-background-radius: 8;                                -fx-opacity: 1;                                -fx-padding: 0 15 0 15;" text="▣   Track Orders" />
+
+
+                <!-- Profile -->
+
+                <Button alignment="CENTER_LEFT" onAction="#openProfile" prefHeight="50" prefWidth="230" style="-fx-background-color: transparent;                                -fx-text-fill: white;                                -fx-font-size: 15px;                                -fx-font-weight: bold;                                -fx-background-radius: 8;                                -fx-padding: 0 15 0 15;" text="👤   My Profile" />
+
+            </VBox>
+
+
+            <!-- LOGOUT -->
+
+            <Button alignment="CENTER_LEFT" onAction="#logout" prefHeight="50" prefWidth="230" style="-fx-background-color: #083B50;                            -fx-text-fill: white;                            -fx-font-size: 15px;                            -fx-background-radius: 8;                            -fx-padding: 0 15 0 15;" text="⇥   Logout" />
+
+        </VBox>
+
+
+        <!-- ===================================================== -->
+        <!-- MAIN CONTENT -->
+        <!-- ===================================================== -->
+
+        <VBox spacing="22.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="270.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+            <padding>
+                <Insets bottom="35" left="45" right="45" top="30" />
+            </padding>
+
+
+            <!-- ================================================= -->
+            <!-- HEADER -->
+            <!-- ================================================= -->
+
+            <HBox alignment="CENTER_LEFT" prefHeight="65">
+
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+
+                    <Label style="-fx-font-size: 30px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #17324D;" text="Track Orders" />
+
+                    <Label style="-fx-font-size: 14px;                                   -fx-text-fill: #718096;" text="View and track the status of your laundry orders" />
+
+                </VBox>
+
+
+                <Button onAction="#openNewOrder" prefHeight="42" prefWidth="140" style="-fx-background-color: #0B4F6C;                                -fx-text-fill: white;                                -fx-font-size: 14px;                                -fx-font-weight: bold;                                -fx-background-radius: 8;                                -fx-cursor: hand;" text="+  New Order" />
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- ORDER SUMMARY -->
+            <!-- ================================================= -->
+
+            <HBox prefHeight="105" spacing="18">
+
+                <!-- Total Orders -->
+
+                <VBox prefWidth="220" spacing="6" style="-fx-background-color: white;                              -fx-background-radius: 12;                              -fx-border-color: #E3EAF0;                              -fx-border-radius: 12;">
+
+                    <padding>
+                        <Insets bottom="18" left="20" right="20" top="18" />
+                    </padding>
+
+                    <Label style="-fx-font-size: 11px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #8A98A8;" text="TOTAL ORDERS" />
+
+                    <Label fx:id="totalOrdersLabel" style="-fx-font-size: 25px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #0B4F6C;" text="0" />
+
+                </VBox>
+
+
+                <!-- Active Orders -->
+
+                <VBox prefWidth="220" spacing="6" style="-fx-background-color: white;                              -fx-background-radius: 12;                              -fx-border-color: #E3EAF0;                              -fx-border-radius: 12;">
+
+                    <padding>
+                        <Insets bottom="18" left="20" right="20" top="18" />
+                    </padding>
+
+                    <Label style="-fx-font-size: 11px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #8A98A8;" text="ACTIVE ORDERS" />
+
+                    <Label fx:id="activeOrdersLabel" style="-fx-font-size: 25px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #176B87;" text="0" />
+
+                </VBox>
+
+
+                <!-- Completed Orders -->
+
+                <VBox prefWidth="220" spacing="6" style="-fx-background-color: white;                              -fx-background-radius: 12;                              -fx-border-color: #E3EAF0;                              -fx-border-radius: 12;">
+
+                    <padding>
+                        <Insets bottom="18" left="20" right="20" top="18" />
+                    </padding>
+
+                    <Label style="-fx-font-size: 11px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #8A98A8;" text="COMPLETED" />
+
+                    <Label fx:id="completedOrdersLabel" style="-fx-font-size: 25px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #27AE60;" text="0" />
+
+                </VBox>
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- ORDERS TITLE -->
+            <!-- ================================================= -->
+
+            <HBox alignment="CENTER_LEFT" prefHeight="40">
+
+                <VBox spacing="3" HBox.hgrow="ALWAYS">
+
+                    <Label style="-fx-font-size: 21px;                                   -fx-font-weight: bold;                                   -fx-text-fill: #17324D;" text="My Orders" />
+
+                    <Label style="-fx-font-size: 13px;                                   -fx-text-fill: #718096;" text="Your recent and previous laundry orders" />
+
+                </VBox>
+
+                <Label fx:id="orderCountLabel" style="-fx-font-size: 13px;                               -fx-text-fill: #718096;" text="0 orders" />
+
+            </HBox>
+
+
+            <!-- ================================================= -->
+            <!-- ORDER LIST -->
+            <!-- ================================================= -->
+
+            <ScrollPane fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" style="-fx-background-color: transparent;                                -fx-background: transparent;                                -fx-border-color: transparent;" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+
+                <content>
+
+                    <VBox fx:id="ordersContainer" fillWidth="true" spacing="15">
+
+                        <padding>
+                            <Insets bottom="20" left="5" right="5" top="5" />
+                        </padding>
+
+                    </VBox>
+
+                </content>
+
+            </ScrollPane>
+
+        </VBox>
+
+    </children>
+
+</AnchorPane>
