@@ -15,6 +15,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import model.Order;
+import model.Session;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -603,9 +604,29 @@ public class OrderManagementController {
     @FXML
     private void goDashboard(ActionEvent event) {
 
+        String dashboardPath;
+
+        if (Session.role != null &&
+                Session.role.equalsIgnoreCase("ADMIN")) {
+
+            dashboardPath =
+                    "/fxml/admin-dashboard.fxml";
+
+        } else if (Session.role != null &&
+                Session.role.equalsIgnoreCase("STAFF")) {
+
+            dashboardPath =
+                    "/fxml/staff-dashboard.fxml";
+
+        } else {
+
+            dashboardPath =
+                    "/fxml/customer-dashboard.fxml";
+        }
+
         loadPage(
                 event,
-                "/fxml/admin-dashboard.fxml"
+                dashboardPath
         );
     }
 
